@@ -1,0 +1,259 @@
+﻿Código da Infração,Desdob.,Descrição da Infração,Amparo Legal (CTB),Infrator,Gravidade,Órgão Competente
+5002,0,"Multa, por não identificação do condutor infrator, imposta à pessoa jurídica ","257, § 8º",Proprietário,---,EST/MUNIC/RODOV
+5010,0,Dirigir veículo sem possuir CNH ou Permissão para Dirigir,"162, I",Condutor,7 - Gravíss 3X,ESTADUAL/RODOV
+5029,1,Dirigir veículo com CNH ou PPD cassada,"162, II",Condutor,7 - Gravíss 5X,ESTADUAL/RODOV
+5029,2,Dirigir veículo com CNH ou PPD com suspensão do direito de dirigir,"162, II",Condutor,7 - Gravíss 5X,ESTADUAL/RODOV
+5037,1,Dirigir veículo com CNH de categoria diferente da do veículo e Dirigir veículo com CNH ou PPD com suspensão do direito de dirigir,"162, III",Condutor,7 - Gravíss 3X,ESTADUAL/RODOV 
+5045,0,Dirigir veículo com validade de CNH/PPD vencida há mais de 30 dias,"162, V",Condutor,7 - Gravíss,ESTADUAL/RODOV
+5053,1,Dirigir veículo sem usar lentes corretoras de visão e Dirigir veículo sem usar aparelho auxiliar de audição e Dirigir veículo sem usar aparelho auxiliar de prótese física e Dirigir veículo s/ adaptações impostas na concessão/renovação licença conduzir,"162, VI",Condutor,7 - Gravíss,ESTADUAL/RODOV
+5061,0,Entregar veículo a pessoa sem CNH ou Permissão para Dirigir,"163 c/c 162, I",Proprietário,7 - Gravíss 3X,ESTADUAL/RODOV
+5070,1,Entregar veículo a pessoa com CNH ou PPD cassada e Entregar veículo a pessoa com CNH ou PPD com suspensão do direito de dirigir,"163 c/c 162, II",Proprietário,7 - Gravíss 5X,ESTADUAL/RODOV
+5088,1,Entregar veículo a pessoa com CNH de categoria diferente da do veículo e Entregar veículo a pessoa com PPD de categoria diferente da do veículo,"163 c/c 162, III",Proprietário,7 - Gravíss 3X,ESTADUAL/RODOV
+5096,0,Entregar veículo a pessoa com CNH/PPD vencida há mais de 30 dias,"163 c/c 162, V",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+5100,1,Entregar o veículo a pessoa sem usar lentes corretoras de visão e Entregar o veículo a pessoa sem usar aparelho auxiliar de audição e Entregar o veículo a pessoa sem aparelho de prótese física e Entregar veíc pessoa s/ adaptações impostas concessão/renovação licença conduzir,"163 c/c 162, VI",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+5118,0,Permitir posse/condução do veículo a pessoa sem CNH ou PPD,"164 c/c 162, I",Proprietário,7 - Gravíss 3X,ESTADUAL/RODOV
+5126,1,Permitir posse/condução do veículo a pessoa com CNH ou PPD cassada e Permitir posse/condução veíc pessoa com CNH/PPD c/ suspensão direito de dirigir,"164 c/c 162, II",Proprietário,7 - Gravíss 5X,ESTADUAL/RODOV
+5134,1,Permitir posse/condução veíc a pessoa com CNH categoria diferente da do veículo e Permitir posse/condução veíc a pessoa com PPD categoria diferente da do veículo ,"164 c/c 162, III",Proprietário,7 - Gravíss 3X,ESTADUAL/RODOV
+5142,0,Permitir posse/condução do veíc a pessoa com CNH/PPD vencida há mais de 30 dias ,"164 c/c 162, V",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+5150,1,Permitir posse/condução do veículo a pessoa sem usar lentes corretoras de visão e Permitir posse/condução do veículo a pessoa s/ usar aparelho auxiliar de audição e Permitir posse/condução do veículo a pessoa sem usar aparelho de prótese física e Permitir posse/cond veíc s/ adaptações impostas concessão/renovação licença cond,"164 c/c 162, VI",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+5169,1,Dirigir sob a influência de álcool e Dirigir sob a influência de qquer substância psicoativa que deter. Dependência,165,Condutor,Gravíss 10X,ESTADUAL/RODOV
+5177,0,Confiar/entregar veíc pess c/ estado físico/psíquico s/ condições dirigir segur,166,Proprietário,7 - Gravíss,ESTAD/MUNIC/RODOV
+5185,1,Deixar o condutor de usar o cinto segurança e Deixar o passageiro de usar o cinto segurança,167,Condutor,5 - Grave,ESTAD/MUNIC/RODOV
+5193,0,Transportar criança sem observância das normas de segurança estabelecidas p/ CTB,168,Condutor,7 - Gravíss,ESTAD/MUNIC/RODOV
+5207,0,Dirigir sem atenção ou sem os cuidados indispensáveis à segurança,169,Condutor,3 - Leve,ESTAD/MUNIC/RODOV
+5215,1,Dirigir ameaçando os pedestres que estejam atravessando a via pública e Dirigir ameaçando os demais veículos ,170,Condutor,Gravíss,ESTAD/MUNIC/RODOV
+5223,1,Usar veículo para arremessar sobre os pedestres água ou detritos e Usar veículo para arremessar sobre os veículos água ou detritos,171,Condutor,4 - Média,MUNICIPAL/RODOV
+5231,1,Atirar do veículo objetos ou substâncias e Abandonar na via objetos ou substâncias,172,Condutor,4 - Média,MUNICIPAL/RODOV
+5240,0,Disputar corrida,173,Condutor,Gravíss 10X,ESTAD/MUNIC/RODOV
+5258,1,Promover na via competição sem permissão e Promover na via eventos organizados sem permissão e Promover na via exibição e demonstração de perícia em manobra de veículo s/perm ,174,PF ou PJ,Gravíss 10X,MUNICIPAL/RODOV
+5266,1,Participar na via como condutor em competição sem permissão e Participar na via como condutor em eventos organizados sem permissão  e Participar como condutor exib/demonst perícia em manobra de veic s/ permissão ,174,Condutor,Gravíss 10X,MUNICIPAL/RODOV
+5274,1,Utiliz veíc demonst/exibir manobra perigosa mediante arrancada brusca e Utiliz veíc dem/exibir manob perig med derrap/frenag c/desliz/arrast pneus,175,Condutor,Gravíss 10X,ESTADUAL/RODOV
+5282,0,"Deixar o cond envolvido em acidente, de prestar ou providenciar socorro a vítima ","176, I",Condutor,Gravíss 5X,ESTADUAL/RODOV
+5290,0,"Deixar o cond envolvido em acid, de adotar provid p/ evitar perigo p/o trânsito","176, II",Condutor,Gravíss 5X,ESTADUAL/RODOV
+5304,0,"Deixar o cond envolvido em acidente, de preservar local p/ trab policia/pericia ","176, III",Condutor,Gravíss 5X,ESTADUAL/RODOV
+5312,0,"Deixar o cond envolvido em acid, de remover o veíc local qdo determ polic/agente ","176, IV",Condutor,Gravíss 5X,ESTADUAL/RODOV
+5320,0,"Deixar o cond envolvido em acid, de identificar-se policial e prestar inf p/o BO ","176, V",Condutor,Gravíss 5X,ESTADUAL/RODOV
+5339,0,"Deixar o cond de prestar socorro vítima acid de trânsito, qdo solicit p/ agente ",177,Condutor,5 - Grave,ESTAD/MUNIC/RODOV
+5347,0,"Deixar o condutor envolvido em acidente s/ vítima, de remover o veículo do local",178,Condutor,4 - Média,ESTADUAL/RODOV
+5355,0,"Fazer ou deixar que se faça reparo em veíc, em rodovia e via de trânsito rápido ","179, I",Condutor,5 - Grave,MUNICIPAL/RODOV
+5363,0,Fazer/deixar que se faça reparo em veíc nas vias (q não rodovia/transito rapido) ,"179, II",Condutor,3 - Leve,MUNICIPAL/RODOV
+5371,0,Ter seu veículo imobilizado na via por falta de combustível ,180,Condutor,4 - Média,MUNICIPAL/RODOV
+5380,0,Estacionar nas esquinas e a menos de 5m do alinhamento da via transversal ,"181, I",Condutor,4 - Média,MUNICIPAL/RODOV
+5398,0,Estacionar afastado da guia da calçada (meio-fio) de 50cm a 1m ,"181, II",Condutor,3 - Leve,MUNICIPAL/RODOV
+5401,0,Estacionar afastado da guia da calçada (meio-fio) a mais de 1m ,"181, III",Condutor,5 - Grave,MUNICIPAL/RODOV
+5410,0,Estacionar em desacordo com as posições estabelecidas no CTB ,"181, IV",Condutor,4 - Média,MUNICIPAL/RODOV
+5428,1,Estacionar na pista de rolamento das estradas e Estacionar na pista de rolamento das rodovias e Estacionar na pista de rolamento das vias de trânsito rápido e Estacionar na pista de rolamento das vias dotadas de acostamento ,"181, V",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+5436,0,"Estacionar junto/sobre hidr de incêndio, reg de água/tampa de poço visit gal sub ","181, VI",Condutor,4 - Média,MUNICIPAL/RODOV
+5444,0,Estacionar nos acostamentos ,"181, VII",Condutor,3 - Leve,MUNICIPAL/RODOV
+5452,1,"Estacionar no passeio, Estacionar sobre faixa destinada a pedestre, Estacionar sobre ciclovia ou ciclofaixa, Estacionar nas ilhas ou refúgios, Estacionar ao lado ou sobre canteiro central/divisores de pista de rolamento, Estacionar ao lado ou sobre marcas de canalização, Estacionar ao lado ou sobre gramado ou jardim público ","181, VIII",Condutor,5 - Grave,MUNICIPAL/RODOV
+5460,0,Estacionar em guia de calçada rebaixada destinada à entrada/saída de veículos ,"181, IX",Condutor,4 - Média,MUNICIPAL/RODOV
+5479,0,Estacionar impedindo a movimentação de outro veículo ,"181, X",Condutor,4 - Média,MUNICIPAL/RODOV
+5487,0,Estacionar ao lado de outro veículo em fila dupla ,"181, XI",Condutor,5 - Grave,MUNICIPAL/RODOV
+5495,0,Estacionar na área de cruzamento de vias ,"181, XII",Condutor,5 - Grave,MUNICIPAL/RODOV
+5509,0,Estacionar no ponto de embarque/desembarque de passageiros transporte coletivo ,"181, XIII",Condutor,4 - Média,MUNICIPAL/RODOV
+5517,1,"Estacionar nos viadutos, Estacionar nas pontes, Estacionar nos túneis ","181, XIV",Condutor,5 - Grave,MUNICIPAL/RODOV
+5525,0,Estacionar na contramão de direção ,"181, XV",Condutor,4 - Média,MUNICIPAL/RODOV
+5533,0,"Estacionar aclive/declive ñ freado e sem calço segurança, PBT superior a 3500kg ","181, XVI",Condutor,5 - Grave,MUNICIPAL/RODOV
+5541,1,"Estacionar em desacordo com a regulamentação especificada pela sinalização, estacionamento rotativo, ponto ou vaga de táxi, vaga de carga/descarga, vaga portador necessid especiais, vaga idoso, vaga de curta duração ","181, XVII",Condutor,5 - Grave,MUNICIPAL/RODOV
+5550,0,Estacionar em local/horário proibido especificamente pela sinalização ,"181, XVIII",Condutor,4 - Média,MUNICIPAL/RODOV
+5568,0,Estacionar local/horário de estacionamento e parada proibidos pela sinalização ,"181, XIX",Condutor,5 - Grave,MUNICIPAL/RODOV
+5576,0,Parar nas esquinas e a menos 5m do bordo do alinhamento da via transversal ,"182, I",Condutor,4 - Média,MUNICIPAL/RODOV
+5584,0,Parar afastado da guia da calçada (meio-fio) de 50cm a 1m ,"182, II",Condutor,3 - Leve,MUNICIPAL/RODOV
+5592,0,Parar afastado da guia da calçada (meio-fio) a mais de 1m ,"182, III",Condutor,4 - Média,MUNICIPAL/RODOV
+5606,0,Parar em desacordo com as posições estabelecidas no CTB ,"182, IV",Condutor,3 - Leve,MUNICIPAL/RODOV
+5614,1,"Parar na pista de rolamento das estradas, Parar na pista de rolamento das rodovias, Parar na pista de rolamento das vias de trânsito rápido, Parar na pista de rolamento das demais vias dotadas de acostamento","182, V",Condutor,5 - Grave,MUNICIPAL/RODOV
+5622,1,"Parar no passeio, Parar sobre faixa destinada a pedestres, Parar nas ilhas ou refúgios, Parar nos canteiros centrais/divisores de pista de rolamento, Parar nas marcas de canalização","182, VI",Condutor,3 - Leve,MUNICIPAL/RODOV
+5630,0,Parar na área de cruzamento de vias ,"182, VII",Condutor,4 - Média,MUNICIPAL/RODOV
+5649,1,"Parar nos viadutos, Parar nas pontes, Parar nos túneis","182, VIII",Condutor,4 - Média,MUNICIPAL/RODOV
+5657,0,Parar na contramão de direção ,"182, IX",Condutor,4 - Média,MUNICIPAL/RODOV
+5665,0,Parar em local/horário proibidos especificamente pela sinalização ,"182, X",Condutor,4 - Média,MUNICIPAL/RODOV
+5673,1,"Parar sobre faixa de pedestres na mudança de sinal luminoso, e (fisc eletrônica)",183,Condutor,4 - Média,MUNICIPAL/RODOV
+5681,0,Transitar na faixa/pista da direita regul circulação exclusiva determ veículo ,"184, I",Condutor,3 - Leve,MUNICIPAL/RODOV
+5690,0,Transitar na faixa/pista da esquerda regul circulação exclusiva determ veículo ,"184, II",Condutor,5 - Grave,MUNICIPAL/RODOV
+5703,0,Deixar de conservar o veículo na faixa a ele destinada pela sinalização de regul ,"185, I",Condutor,4 - Média,MUNICIPAL/RODOV
+5711,0,Deixar de conservar nas faixas da direita o veículo lento e de maior porte ,"185, II",Condutor,4 - Média,MUNICIPAL/RODOV
+5720,0,Transitar pela contramão de direção em via com duplo sentido de circulação ,"186, I",Condutor,5 - Grave,MUNICIPAL/RODOV
+5738,0,Transitar pela contramão de direção em via c/ sinalização de regul sentido único ,"186, II",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+5746,1,"Transitar em local/horário não permitido pela regul estabelecida p/ autoridade,  rodízio, caminhão","187, I",Condutor,4 - Média,MUNICIPAL/RODOV
+5762,0,"Transitar ao lado de outro veículo, interrompendo ou perturbando o trânsito ",188,Condutor,4 - Média,MUNICIPAL/RODOV
+5770,1,"Deixar de dar passagem a veíc precedido de batedores devidamente identificados, Deixar de dar passagem a veíc socorro incêndio/salv serv urgência devid identif, Deixar de dar passagem a veíc de polícia em serviço de urgência devid identif, Deixar de dar passagem a veíc de operação e fiscalização de trânsito devid ident, Deixar de dar passagem a ambulância em serviço de urgência devid identificada",189,Condutor,7 - Gravíss,ESTAD/MUNIC/RODOV
+5789,0,Seguir veículo em serv urgência devid identific p/ alarme sonoro/ilum vermelha ,190,Condutor,5 - Grave,MUNICIPAL/RODOV
+5797,0,Forçar passagem entre veícs trans sent opostos na iminência realiz ultrapassagem ,191,Condutor,Gravíss 10X,MUNICIPAL/RODOV
+5800,0,Deixar guardar dist segurança lat/front entre seu veíc e demais e ao bordo pista ,192,Condutor,5 - Grave,MUNICIPAL/RODOV
+5819,1,"Transitar com o veículo em calçadas, passeios, Transitar com o veículo em ciclovias, ciclofaixas - Transitar com o veículo em ajardinamentos, gramados, jardins públicos - Transitar com o veículo em canteiros centrais/divisores de pista de rolamento - Transitar com o veículo em ilhas, refúgios - Transitar com o veículo em marcas de canalização - Transitar com o veículo em acostamentos - Transitar com o veículo em passarelas",193,Condutor,7 - Gravíss 3X,MUNICIPAL/RODOV
+5827,0,"Transitar em marcha ré, salvo na distância necessária a pequenas manobras ",194,Condutor,5 - Grave,MUNICIPAL/RODOV
+5835,0,Desobedecer às ordens emanadas da autorid compet de trânsito ou de seus agentes ,195,Condutor,5 - Grave,ESTAD/MUNIC/RODOV
+5843,1,"Deixar de indicar c/ antec, med gesto de braço/luz indicadora, início da marcha - Deixar de indicar c/ antec, med gesto de braço/luz indicadora, manobra de parar - Deixar de indicar c/ antec, med gesto de braço/luz indicadora, mudança direção - Deixar de indicar c/ antec, med gesto de braço/luz indicadora, mudança de faixa ",196,Condutor,5 - Grave,ESTAD/MUNIC/RODOV
+5851,1,Deixar de deslocar c/antecedência veíc p/ faixa mais à esquerda qdo for manobrar - Deixar de deslocar c/antecedência veíc p/ faixa mais à direita qdo for manobrar,197,Condutor,4 - Média,MUNICIPAL/RODOV
+5860,0,Deixar de dar passagem pela esquerda quando solicitado ,198,Condutor,4 - Média,MUNICIPAL/RODOV
+5878,0,"Ultrapassar pela direita, salvo qdo veíc da frente der sinal p/ entrar esquerda ",199,Condutor,4 - Média,MUNICIPAL/RODOV
+5886,0,Ultrap pela direita veíc transp colet/escolar parado para emb/desemb passageiros ,200,Condutor,7 - Gravíss,MUNICIPAL/RODOV
+5894,0,"Deixar de guardar a distância lateral de 1,50m ao passar/ultrapassar bicicleta ",201,Condutor,4 - Média,MUNICIPAL/RODOV
+5908,0,Ultrapassar pelo acostamento ,"202, I",Condutor,7 - Gravíss 5X,MUNICIPAL/RODOV
+5916,1,Ultrapassar em interseções - Ultrapassar em passagem de nível ,"202, II",Condutor,7 - Gravíss 5X,MUNICIPAL/RODOV
+5924,1,"Ultrapassar pela contramão nas curvas sem visibilidade suficiente - Ultrapassar pela contramão nos aclives ou declives, sem visibilidade suficiente","203, I",Condutor,7 – Gravíss 5X,MUNICIPAL/RODOV
+5932,0,Ultrapassar pela contramão nas faixas de pedestre ,"203, II",Condutor,7 – Gravíss 5X,MUNICIPAL/RODOV
+5940,1,Ultrapassar pela contramão nas pontes - Ultrapassar pela contramão nos viadutos - Ultrapassar pela contramão nos túneis,"203, III",Condutor,7 – Gravíss 5X,MUNICIPAL/RODOV
+5959,1,Ultrapassar pela contramão veículo parado em fila junto sinal luminoso - Ultrapassar pela contramão veículo parado em fila junto a cancela/porteira - Ultrapassar pela contramão veículo parado em fila junto a cruzamento - Ultrapassar pela contramão veíc parado em fila junto qq impedimento à circulação ,"203, IV",Condutor,7 – Gravíss 5X,MUNICIPAL/RODOV
+5967,0,"Ultrapassar pela contramão linha de divisão de fluxos opostos, contínua amarela ","203, V",Condutor,7 – Gravíss 5X,MUNICIPAL/RODOV
+5975,0,"Deixar de parar no acostamento à direita, p/ cruzar pista ou entrar à esquerda ",204,Condutor,5 - Grave,MUNICIPAL/RODOV
+5983,0,Ultrapassar veículo em movimento que integre cortejo/desfile/formação militar ,205,Condutor,3 - Leve,MUNICIPAL/RODOV
+5991,0,Executar operação de retorno em locais proibidos pela sinalização ,"206, I",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6009,1,Executar operação de retorno nas curvas - Executar operação de retorno nos aclives ou declives - Executar operação de retorno nas pontes - Executar operação de retorno nos viadutos - Executar operação de retorno nos túneis ,"206, II",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6017,1,"Executar operação de retorno passando por cima de calçada, passeio - Executar operação de retorno passando por cima de ilha, refúgio - Executar operação de retorno passando por cima de ajardinamento - Executar operação de retorno passando por cima de canteiro de divisor de pista - Executar operação de retorno passando por cima de faixa de pedestres - Executar operação de retorno passando por cima de faixa de veíc não motorizados ","206, III",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6025,0,"Executar retorno nas interseções, entrando na contramão da via transversal ","206, IV",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6033,0,Executar retorno c/prejuízo da circulação/segurança ainda que em local permitido ,"206, V",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6041,1,Executar operação de conversão à direita em local proibido pela sinalização - Executar operação de conversão à esquerda em local proibido pela sinalização,207,Condutor,5 - Grave,MUNICIPAL/RODOV
+6050,1,Avançar o sinal vermelho do semáforo - Avançar o sinal de parada obrigatória - Avançar o sinal vermelho do semáforo - fiscalização eletrônica ,208,Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6068,1,Transpor bloqueio viário com ou sem sinalização ou dispositivos auxiliares - Deixar de adentrar às áreas destinadas à pesagem de veículos - Evadir-se para não efetuar o pagamento do pedágio ,209,Condutor,5 - Grave,ESTAD/MUNIC/RODOV
+6076,0,Transpor bloqueio viário policial ,210,Condutor,Gravíss,ESTAD/MUNIC/RODOV
+6084,1,"Ultrapassar veículos motorizados em fila, parados em razão de sinal luminoso - Ultrapassar veículos motorizados em fila, parados em razão de cancela - Ultrapassar veíc motorizados em fila parados em razão de bloqueio viário parcial - Ultrapassar veículos motorizados em fila, parados em razão de qualquer obstáculo ",211,Condutor,5 - Grave,ESTAD/MUNIC/RODOV
+6092,0,Deixar de parar o veículo antes de transpor linha férrea ,212,Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6106,0,Deixar de parar sempre que a marcha for interceptada por agrupamento de pessoas ,"213, I",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6114,0,Deixar de parar sempre que a marcha for interceptada por agrupamento de veículos ,"213, II",Condutor,5 - Grave,MUNICIPAL/RODOV
+6122,0,Deixar de dar preferência a pedestre/veic ñ motorizado na faixa a ele destinada ,"214, I",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6130,0,Deixar de dar preferência a pedestre/veic ñ mot que ñ haja concluído a travessia ,"214, II",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6149,0,Deixar de dar preferência a pedestre port deficiência fís/criança/idoso/gestante ,"214, III",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6157,0,Deixar de dar preferência a pedestre/veic ñ mot qdo iniciada travessia s/sinaliz ,"214, IV",Condutor,5 - Grave,MUNICIPAL/RODOV
+6165,0,Deixar de dar preferência a pedestre/veic não mot atravessando a via transversal ,"214, V",Condutor,5 - Grave,MUNICIPAL/RODOV
+6173,1,"Deixar de dar preferência em interseção ñ sinaliz, a veíc circulando por rodovia - Deixar de dar preferência em interseção ñ sinaliz, veíc circulando por rotatória - Deixar de dar prefer em interseção não sinalizada, a veículo que vier da direita ","215, I, a",Condutor,5 - Grave,MUNICIPAL/RODOV
+6181,0,Deixar de dar preferência nas interseções com sinalização de Dê a Preferência ,"215, II",Condutor,5 - Grave,MUNICIPAL/RODOV
+6190,0,Entrar/sair área lindeira sem precaução com a segurança de pedestres e veículos ,216,Condutor,4 - Média,MUNICIPAL/RODOV
+6203,0,Entrar/sair de fila de veículos estacionados sem dar pref a pedestres/veículos ,217,Condutor,4 - Média,MUNICIPAL/RODOV
+6254,0,"Transitar em velocidade inferior à metade da máxima da via, salvo faixa direita ",219,Condutor,4 - Média,MUNICIPAL/RODOV
+6262,0,Deixar de reduzir a veloc qdo se aproximar de passeata/aglomeração/desfile/etc ,"220, I",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6270,0,Deixar de reduzir a veloc onde o trânsito esteja sendo controlado pelo agente ,"220, II",Condutor,5 - Grave,MUNICIPAL/RODOV
+6289,1,Deixar de reduzir a velocidade do veículo ao aproximar-se da guia da calçada - Deixar de reduzir a velocidade do veículo ao aproximar-se do acostamento,"220, III",Condutor,5 - Grave,MUNICIPAL/RODOV
+6297,0,Deixar de reduzir velocidade do veículo ao aproximar-se interseção ñ sinalizada ,"220, IV",Condutor,5 - Grave,MUNICIPAL/RODOV
+6300,0,Deixar reduzir velocidade nas vias rurais cuja faixa domínio não esteja cercada ,"220, V",Condutor,5 - Grave,MUNICIPAL/RODOV
+6319,0,Deixar de reduzir a velocidade nos trechos em curva de pequeno raio ,"220, VI",Condutor,5 - Grave,MUNICIPAL/RODOV
+6327,0,Deixar de reduzir veloc ao aproximar local sinaliz advert de obras/trabalhadores ,"220, VII",Condutor,5 - Grave,MUNICIPAL/RODOV
+6335,0,Deixar de reduzir a velocidade sob chuva/neblina/cerração/ventos fortes ,"220, VIII",Condutor,5 - Grave,MUNICIPAL/RODOV
+6343,0,Deixar de reduzir a velocidade quando houver má visibilidade ,"220, IX",Condutor,5 - Grave,MUNICIPAL/RODOV
+6351,0,Deixar de reduzir veloc qdo pavimento se apresentar escorreg/defeituoso/avariado ,"220, X",Condutor,5 - Grave,MUNICIPAL/RODOV
+6360,0,Deixar de reduzir a velocidade à aproximação de animais na pista ,"220, XI",Condutor,5 - Grave,MUNICIPAL/RODOV
+6378,0,"Deixar de reduzir a velocidade de forma compatível com a segurança, em declive ","220, XII",Condutor,5 - Grave,MUNICIPAL/RODOV
+6386,0,Deixar de reduzir veloc de forma compatível c/ segurança ao ultrapassar ciclista ,"220, XIII",Condutor,5 - Grave,MUNICIPAL/RODOV
+6394,1,Deixar de reduzir a velocidade nas proximidades de escolas - Deixar de reduzir a velocidade nas proximidades de hospitais - Deixar de reduzir veloc na proxim estação embarque/desembarque passageiros - Deixar de reduzir veloc onde haja intensa movimentação de pedestres ,"220, XIV",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6408,0,Portar no veículo placas de identificação em desacordo c/ especif/modelo Contran ,221,Proprietário,4 - Média,ESTADUAL/RODOV
+6416,0,Confec/distribuir/colocar veíc próprio/terceiro placa identif desacordo Contran ,"221, § único",PF ou PJ,Média,ESTADUAL/RODOV
+6424,0,Deixar de manter ligado em emerg sist ilum vermelha intermitente ainda q parado ,222,Condutor,4 - Média,MUNICIPAL/RODOV
+6432,1,Transitar com farol desregulado perturbando visão outro condutor - Transitar com o facho de luz alta perturbando visão outro condutor,223,Condutor,5 - Grave,ESTADUAL/RODOV
+6440,0,Fazer uso do facho de luz alta dos faróis em vias providas de iluminação pública ,224,Condutor,3 - Leve,MUNICIPAL/RODOV
+6459,1,Deixar de sinalizar via p/ tornar visível local qdo tiver remover veíc da pista - Deixar de sinalizar a via p/ tornar visível o local qdo permanecer acostamento,"225, I",Condutor,5 - Grave,MUNICIPAL/RODOV
+6467,0,Deixar de sinalizar a via p/ tornar visível o local qdo a carga for derramada ,"225, II",Condutor,5 - Grave,MUNICIPAL/RODOV
+6475,0,Deixar de retirar qualquer objeto utilizado para sinalização temporária da via ,226,Condutor,4 - Média,MUNICIPAL/RODOV
+6483,0,Usar buzina que não a de toque breve como advertência a pedestre ou condutores ,"227, I",Condutor,3 - Leve,MUNICIPAL/RODOV
+6491,0,Usar buzina prolongada e sucessivamente a qualquer pretexto ,"227, II",Condutor,3 - Leve,MUNICIPAL/RODOV
+6505,0,Usar buzina entre as vinte e duas e as seis horas ,"227, III",Condutor,3 - Leve,MUNICIPAL/RODOV
+6513,0,Usar buzina em locais e horários proibidos pela sinalização ,"227, IV",Condutor,3 - Leve,MUNICIPAL/RODOV
+6521,0,Usar buzina em desacordo c/ os padrões e freqüências estabelecidas pelo Contran ,"227, V",Proprietário,3 - Leve,MUNICIPAL/RODOV
+6530,0,Usar no veículo equip c/ som em volume/freqüência não autorizados pelo Contran ,228,Condutor,5 - Grave,MUNICIPAL/RODOV
+6548,0,Usar no veíc alarme/aparelho produz som perturbe sossego púb desac norma Contran ,229,Condutor,4 - Média,ESTADUAL/RODOV
+6556,1,Conduzir o veículo com o lacre de identificação violado/falsificado - Conduzir o veículo com a inscrição do chassi violada/falsificada - Conduzir o veículo com o selo violado/falsificado - Conduzir o veículo com a placa violada/falsificada - Conduzir o veículo com qualquer outro elem de identificação violado/falsificado ,"230, I",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+6564,0,Conduzir o veículo transportando passageiros em compartimento de carga ,"230, II",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6572,0,Conduzir o veículo com dispositivo antirradar ,"230, III",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+6580,0,Conduzir o veículo sem qualquer uma das placas de identificação ,"230, IV",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+6599,1,Conduzir o veículo que não esteja registrado - Conduzir o veículo registrado que não esteja devidamente licenciado,"230, V",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+6602,0,Conduzir o veículo com qualquer uma das placas sem legibilidade e visibilidade ,"230, VI",Proprietário,7 - Gravíss,ESTADUAL/RODOV
+6610,1,Conduzir o veículo com a cor alterada - Conduzir o veículo com característica alterada ,"230, VII",Proprietário,5 - Grave,ESTADUAL/RODOV
+6629,0,"Conduzir veículo s/ ter sido submetido à inspeção seg veicular, qdo obrigatória ","230, VIII",Proprietário,5 - Grave,ESTADUAL/RODOV
+6637,1,Conduzir o veículo sem equipamento obrigatório - Conduzir o veículo com equipamento obrigatório ineficiente/inoperante,"230, IX",Proprietário,5 - Grave,ESTADUAL/RODOV
+6645,0,Conduzir o veículo com equip obrigatório em desacordo com o estab pelo Contran ,"230, X",Proprietário,5 - Grave,ESTADUAL/RODOV
+6653,1,Conduzir o veículo com descarga livre - Conduzir o veículo com silenciador de motor defeituoso/deficiente/inoperante,"230, XI",Proprietário,5 - Grave,ESTADUAL/RODOV
+6661,0,Conduzir o veículo com equipamento ou acessório proibido ,"230, XII",Proprietário,5 - Grave,ESTADUAL/RODOV
+6670,0,Conduzir o veículo c/ equip do sistema de iluminação e de sinalização alterados ,"230, XIII",Proprietário,5 - Grave,ESTADUAL/RODOV
+6688,0,Conduzir veíc c/ registrador instan inalt de velocidade/tempo viciado/defeituoso ,"230, XIV",Proprietário,5 - Grave,ESTADUAL/RODOV
+6696,1,Conduzir c/ inscr/adesivo/legenda/símbolo afixado pára-brisa e extensão traseira - Conduzir c/ inscr/adesivo/legenda/símbolo pintado pára-brisa e extensão traseira,"230, XV",Proprietário,5 - Grave,ESTADUAL/RODOV
+6700,0,"Conduzir veíc com vidro total/parcialmente coberto por película, painéis/pintura ","230, XVI",Proprietário,5 - Grave,ESTADUAL/RODOV
+6718,0,Conduzir o veículo com cortinas ou persianas fechadas ,"230, XVII",Proprietário,5 - Grave,ESTADUAL/RODOV
+6726,1,"Conduzir o veículo em mau estado de conservação, comprometendo a segurança - Conduzir o veículo reprovado na avaliação de inspeção de segurança - Conduzir o veículo reprovado na avaliação de emissão de poluentes e ruído ","230, XVIII",Proprietário,5 - Grave,ESTADUAL/RODOV
+6734,0,Conduzir o veículo sem acionar o limpador de pára-brisa sob chuva ,"230, XIX",Condutor,5 - Grave,ESTADUAL/RODOV
+6742,0,Conduzir o veículo sem portar a autorização para condução de escolares ,"230, XX",Proprietário,5 - Grave,ESTADUAL/RODOV
+6750,0,Conduzir o veíc de carga c/ falta inscrição da tara e demais previstas no CTB ,"230, XXI",Proprietário,4 - Média,ESTADUAL/RODOV
+6769,1,Conduzir o veículo com defeito no sistema de iluminação/lâmpada queimada - Conduzir o veículo com defeito no sistema de sinalização/lâmpada queimada ,"230, XXII",Proprietário,4 - Média,ESTADUAL/RODOV
+6777,0,"Transitar com o veículo danificando a via, suas instalações e equipamentos","231, I",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6785,1,Transitar com veículo derramando a carga que esteja transportando - Transitar com veículo lançando a carga que esteja transportando - Transitar com veículo arrastando a carga que esteja transportando ,"231, II, a",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6793,0,Transitar com veíc derramando/lançando combustível/lubrif que esteja utilizando ,"231, II, b",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6807,0,Transitar c/veíc derraman/lançando/arrastando objeto possa acarretar risco acid ,"231, II, c",Condutor,7 - Gravíss,MUNICIPAL/RODOV
+6815,0,"Transitar com veículo produzindo fumaça, gases ou partículas em desac c/ Contran ","231, III",Proprietário,5 - Grave,MUNICIPAL/RODOV
+6823,1,Transitar c/ veíc e/ou carga c/ dimensões superiores limite legal s/ autorização - Transitar c/ veíc e/ou carga c/ dimensões superiores est p/sinalização s/autoriz,"231, IV",Proprietário,5 - Grave,MUNICIPAL/RODOV
+6831,1,Transitar com o veículo com excesso de peso PBT/PBTC - Transitar com o veículo com excesso de peso - Por Eixo - Transitar com o veículo com excesso de peso - PBT/PBTC e Por Eixo ,"231, V",Emb/Transp,Média,MUNICIPAL/RODOV
+6840,1,"Transitar em desacordo c/ autorização expedida p/veículo c/ dimensões excedentes - Transitar com autorização vencida, expedida p/ veículo c/ dimensões excedentes","231, VI",Proprietário,5 - Grave,MUNICIPAL/RODOV
+6858,0,Transitar com o veículo com lotação excedente ,"231, VII",Condutor,4 - Média,ESTAD/MUNIC/RODOV
+6866,1,Transitar efetuando transporte remunerado de pessoas qdo ñ licenciado p/esse fim - Transitar efetuando transporte remunerado de bens qdo não licenciado p/ esse fim,"231, VIII",Proprietário,4 - Média,ESTAD/MUNIC/RODOV
+6874,1,Transitar com o veículo desligado em declive - Transitar com o veículo desengrenado em declive,"231, IX",Condutor,4 - Média,MUNICIPAL/RODOV
+6882,0,Transitar com o veículo excedendo a CMT em até 600 kg ,"231, X",Proprietário,4 - Média,MUNICIPAL/RODOV
+6890,0,Transitar com o veículo excedendo a CMT entre 601 e 1.000 kg,"231, X",Proprietário,5 - Grave,MUNICIPAL/RODOV
+6904,0,Transitar com o veículo excedendo a CMT acima de 1.000 kg ,"231, X",Proprietário,7 - Gravíss,MUNICIPAL/RODOV
+6912,0,Conduzir veículo sem os documentos de porte obrigatório referidos no CTB  ,232,Condutor,3 - Leve,ESTADUAL/RODOV
+6920,1,"Deixar de efetuar registro do veículo em 30 dias, qdo for transf a propriedade - Deixar de efetuar reg do veíc em 30 dias, qdo mudar o munic de domicilio/resid - Deixar de efetuar reg de veíc em 30 dias, qdo for alterada qquer caract do veic - Deixar de efetuar registro de veículo em 30 dias, qdo houver mudança de categoria","233 c/c 123, I, II, III, IV",Proprietário,5 - Grave,ESTADUAL
+6939,1,Falsificar ou adulterar documento de habilitação - Falsificar ou adulterar documento de identificação do veículo,234,Condutor,7 - Gravíss,ESTADUAL/RODOV
+6947,1,Conduzir pessoas nas partes externas do veículo - Conduzir animais nas partes externas do veículo - Conduzir carga nas partes externas do veículo ,235,Condutor,5 - Grave,MUNICIPAL/RODOV
+6955,0,Rebocar outro veículo com cabo flexível ou corda ,236,Condutor,4 - Média,MUNICIPAL/RODOV
+6963,0,Trans c/veíc desac c/especificação/falta de inscr/simbologia necessária identif ,237,Proprietário,5 - Grave,ESTADUAL/RODOV
+6971,0,Recusar-se a entregar CNH/CRV/CRLV/ outros documentos ,238,Condutor,7 - Gravíss,ESTADUAL/RODOV
+6980,0,"Retirar do local veículo legalmente retido para regularização, sem permissão ",239,Condutor,7 - Gravíss,ESTAD/MUNIC/RODOV
+6998,0,Deixar responsável de promover baixa registro de veíc irrecuperável/desmontado ,240,Proprietário,5 - Grave,ESTADUAL
+7005,1,Deixar de atualizar o cadastro de registro do veículo - Deixar de atualizar o cadastro de habilitação do condutor,241,Proprietário,3 - Leve,ESTADUAL
+7013,1,Fazer falsa declaração de domicílio para fins de registro/licenciamento - Fazer falsa declaração de domicílio para fins de habilitação,242,Proprietário,7 - Gravíss,ESTADUAL
+7021,0,Deixar seguradora de comunicar ocorrência perda total veíc e devolver placas/doc ,243,P Jurídica,Grave,ESTADUAL
+7030,1,"Conduzir motocicleta, motoneta e ciclomotor sem capacete de segurança - Conduzir motocicleta, motoneta e ciclomotor sem vestuário aprovado pelo Contran","244, I",Condutor,Gravíss,ESTAD/MUNIC/RODOV
+7048,1,"Conduzir motocicleta, motoneta e ciclomotor transportando passageiro s/ capacete - Conduzir motocicleta/motoneta/ciclomotor transportando pas. fora do assento","244, II",Condutor,Gravíss,MUNICIPAL/RODOV
+7056,1,Conduzir motoc/moton/ciclomotor fazendo malabarismo/equilibrando-se em uma roda - Conduzir ciclo fazendo malabarismo ou equilibrando-se em uma roda,"244, III",Condutor,Gravíss,MUNICIPAL/RODOV
+7064,0,"Conduzir motocicleta, motoneta e ciclomotor com os faróis apagados ","244, IV",Condutor,Gravíss,MUNICIPAL/RODOV
+7072,1,Conduzir motocicleta/motoneta/ciclomotor transportando criança menor de 7 anos - Conduzir motoc/moton/ciclom transp criança s/ condição cuidar própria segurança,"244, V",Condutor,Gravíss,MUNICIPAL/RODOV
+7080,0,"Conduzir motocicleta, motoneta e ciclomotor rebocando outro veículo ","244, VI",Condutor,5 - Grave,MUNICIPAL/RODOV
+7099,1,Conduzir motocicleta/motoneta/ciclomotor sem segurar o guidom com ambas as mãos ,"244, VII",Condutor,5 - Grave,MUNICIPAL/RODOV
+7102,1,"Conduzir motocicleta, motoneta e ciclomotor transportando carga incompatível - Conduzir motoc/moton/ transportando carga em desacordo c/ § 2º do Art 139-A CTB","244, VIII",Condutor,5 - Grave,MUNICIPAL/RODOV
+7110,0,Conduzir ciclo transportando passageiro fora da garupa/assento a ele destinado ,"244, § 1º, a",Condutor,4 - Média,MUNICIPAL/RODOV
+7129,1,Conduzir ciclo via de trâns rápido ou rodovia salvo se houver acostam/fx própria - Conduzir ciclomotor em via de trânsito rápido - Conduzir ciclomotor em rodovia salvo se houver acostamento ou faixa própria,"244, § 1º, b",Condutor,4 - Média,MUNICIPAL/RODOV
+7137,0,Conduzir ciclo transportando criança s/ condição de cuidar própria segurança ,"244, § 1º, c",Condutor,4 - Média,MUNICIPAL/RODOV
+7145,0,"Utilizar a via para depósito de mercadorias, materiais ou equipamentos ",245,PF ou PJ,Grave,MUNICIPAL/RODOV
+7153,1,Deixar de sinalizar obstáculo à circulação/segurança calçada/pista-s/agravamento - Obstaculizar a via indevidamente-s/agravamento,246,PF ou PJ,Gravíss,MUNICIPAL/RODOV
+7161,1,Deixar de sinalizar obstáculo circulação/segurança calçada/pista-agravamento 2X - Obstaculizar a via indevidamente-agravamento 2X,246,PF ou PJ,Gravíss 2X,MUNICIPAL/RODOV
+7170,1,Deixar de sinalizar obstáculo circulação/segurança calçada/pista-agravamento 3X - Obstaculizar a via indevidamente-agravamento 3X,246,PF ou PJ,Gravíss 3X,MUNICIPAL/RODOV
+7188,1,Deixar de sinalizar obstáculo circulação/segurança calçada/pista-agravamento 4X - Obstaculizar a via indevidamente-agravamento 4X,246,PF ou PJ,Gravíss 4X,MUNICIPAL/RODOV
+7196,2,Obstaculizar a via indevidamente-agravamento 5X ,246,PF ou PJ,Gravíss 5X,MUNICIPAL/RODOV
+7200,1,Deixar de conduzir pelo bordo pista em fila única veíc tração/propulsão humana - Deixar de conduzir pelo bordo da pista em fila única veículo de tração animal ,247,Condutor,4 - Média,MUNICIPAL/RODOV
+7218,0,Transportar em veíc destinado transp passageiros carga excedente desac art.109 ,248,Condutor,5 - Grave,ESTADUAL/RODOV
+7226,1,Deixar de manter acesas à noite as luzes posição qdo o veículo estiver parado - Deixar de manter acesas à noite as luzes de posição veic fazendo carga/descarg a ,249,Condutor,4 - Média,MUNICIPAL/RODOV
+7234,0,"Em movimento, deixar de manter acesa a luz baixa durante à noite ","250, I, a",Condutor,4 - Média,MUNICIPAL/RODOV
+7242,0,"Em movimento de dia, deixar de manter acesa luz baixa túnel com iluminação pública","250, I, b",Condutor,4 - Média,MUNICIPAL/RODOV
+7250,0,"Em mov, deixar de manter acesa luz baixa veíc transp coletivo faixa/pista excl ","250, I, c",Condutor,4 - Média,MUNICIPAL/RODOV
+7269,0,"Em movimento, deixar de manter acesa luz baixa do ciclomotor ","250, I, d",Condutor,4 - Média,MUNICIPAL/RODOV
+7277,0,Em mov deixar de manter acesas luzes de posição sob chuva forte/neblina/cerração ,"250, II",Condutor,4 - Média,MUNICIPAL/RODOV
+7285,0,"Em movimento, deixar de manter a placa traseira iluminada à noite ","250, III",Condutor,4 - Média,ESTADUAL/RODOV
+7293,0,"Utilizar o pisca-alerta, exceto em imobilizações ou situações de emergência ","251, I",Condutor,4 - Média,MUNICIPAL/RODOV
+7307,0,"Utilizar luz alta e baixa intermitente, exceto quando permitido pelo CTB ","251, II",Condutor,4 - Média,MUNICIPAL/RODOV
+7315,0,Dirigir o veículo com o braço do lado de fora ,"252, I",Condutor,4 - Média,MUNICIPAL/RODOV
+7323,1,Dirigir o veículo transport pessoas à sua esquerda ou entre os braços e pernas - Dirigir o veículo transport animais à sua esquerda ou entre os braços e pernas - Dirigir o veículo transport volume à sua esquerda ou entre os braços e pernas ,"252, II",Condutor,4 - Média,ESTADUAL/RODOV
+7331,0,Dirigir o veículo com incapacidade física ou mental temporária ,"252, III",Condutor,4 - Média,ESTADUAL/RODOV
+7340,0,Dirigir o veíc usando calçado que ñ se firme nos pés/comprometa utiliz pedais ,"252, IV",Condutor,4 - Média,ESTADUAL/RODOV
+7358,0,"Dirigir o veículo com apenas uma das mãos, exceto quando permitido pelo CTB ","252, V",Condutor,4 - Média,ESTADUAL/RODOV
+7366,1,Dirigir o veículo utilizando-se de fones nos ouvidos conec a aparelhagem sonora - Dirigir veículo utilizando-se de telefone celular ,"252, VI",Condutor,4 - Média,ESTAD/MUNIC/RODOV
+7374,0,Bloquear a via com veículo ,253,Condutor,7 - Gravíss,MUNICIPAL/RODOV
+7382,0,"É proib ao pedestre permanecer/andar pista, exceto p/ cruzá-las onde permitido ","254, I",Pedestre,3 - Leve 50%,MUNICIPAL/RODOV
+7390,1,É proibido ao pedestre cruzar pista de rolamento de viaduto exc onde permitido - de ponte exceto onde permitido - de túneis exceto onde permitido ,"254, II",Pedestre,3 - Leve 50%,MUNICIPAL/RODOV
+7404,0,É proib ao pedestre atravessar via área cruzamento exc onde permitido p/ sinaliz ,"254, III",Pedestre,3 - Leve 50%,MUNICIPAL/RODOV
+7412,0,É proib pedestre utilizar via em agrupam que perturbe trâns/prát esporte/desfile ,"254, IV",Pedestre,3 - Leve 50%,MUNICIPAL/RODOV
+7420,1,É proibido ao pedestre andar fora da faixa própria - andar fora da passarela - andar fora da passagem aérea - andar fora da passagem subterrânea,"254, V",Pedestre,3 - Leve 50%,MUNICIPAL/RODOV
+7439,0,É proibido ao pedestre desobedecer a sinalização de trânsito específica ,"254, VI",Pedestre,3 - Leve 50%,MUNICIPAL/RODOV
+7447,1,Conduzir bicicleta em passeios onde não seja permitida a circulação desta - Conduzir bicicleta de forma agressiva ,255,Condutor,4 - Média,MUNICIPAL/RODOV
+7455,0,Transitar em velocidade superior à máxima permitida em até 20% ,"218, I",Condutor,4 - Média,MUNICIPAL/RODOV
+7463,0,Transitar em velocidade superior à máxima permitida em mais de 20% até 50% ,"218, II",Condutor,5 - Grave,MUNICIPAL/RODOV
+7471,0,Transitar em velocidade superior à máxima permitida em mais de 50% ,"218, III",Condutor,Gravíss 3X,MUNICIPAL/RODOV
+7480,1,Aprovar proj edificação pólo atrativo trânsito s/ anuência órgão/entid trânsito e Aprovar proj edificação pólo atrativo trâns s/ estacion/indicação vias de acesso ,"93 c/c 95, § 4º ",Serv público,---,MUNICIPAL/RODOV
+7498,0,Ñ sinalizar devida/imed obstáculo à circul/segurança veíc/pedestre pista/calçada ,94,Serv público,---,MUNICIPAL/RODOV
+7501,0,Utilizar ondulação transversal/sonorizador fora padrão/critério estab p/ Contran ,"94, § único",Serv público,---,MUNICIPAL/RODOV
+7510,1,Iniciar obra perturbe/interrompa circulação/segurança veíc/pedestres s/permissão e Iniciar evento perturbe/interrompa circulaç/segurança veíc/pedestres s/permissão ,95,PF ou PJ,---,MUNICIPAL/RODOV
+7528,1,Não sinalizar a execução ou manutenção da obra e Não sinalizar a execução ou manutenção do evento ,"95, § 1º",PF ou PJ,---,MUNICIPAL/RODOV
+7536,0,Não avisar comunidade c/ 48h antec interdição via indicando caminho alternativo ,"95, § 2º",Serv público,---,MUNICIPAL/RODOV
+7544,1,Falta de escrituração livro registro entrada/saída e de uso placa de experiência - Atraso escrituração livro registro entrada/saída e de uso placa de experiência - Fraude escrituração livro registro entrada/saída e de uso placa de experiência - Recusa da exibição do livro registro entrada/saída e de uso placa de experiência ,"330, § 5º",PF ou PJ,Gravíss,ESTADUAL
+7552,1,Conduzir motoc/moton/ efetuando transp remun mercadoria desac c/ art 139-A CTB - Conduzir motoc/moton/ efet transp remun desac normas ativid profic mototaxistas,"244, IX",Condutor,5 - Grave,ESTAD/MUNIC/RODOV
+7560,0,Conduzir veíc de transp passag ou carga em desacordo c/ as cond do art 67-C CTB ,"230, XXIII",Condutor,4 – Média ,MUNICIPAL/RODOV
+7579,0,Cond que se recusar a se submeter a qq dos proc prev no art. 277 do CTB,"                              277, § 3º, c/c 165",Condutor,       Gravíss 10X,ESTADUAL/RODOV
+7587,0,Transitar na faixa ou via exclusiva regulam. p/ transp. públ. coletivo passag.,"184, III",Condutor,7-Gravíss,MUNICIPAL/RODOV
+7595,0,Dirigir veículo realizando cobrança de tarifa com veículo em movimento,"252, VII",Condutor,Média,ESTAD/MUNIC/RODOV
+7609,0,Organizar as condutas previstas no caput do art. 253-A,"253-A, § 1º",PF ou PJ,Gravíss 100X,MUNICIPAL/RODOV
+7617,1,"Usar veículo para, deliberadamente, interromper a circulação na via - restringir a circulação na via - perturbar a circulação na via",253-A,Condutor,Gravíss 30 X,MUNICIPAL/RODOV
