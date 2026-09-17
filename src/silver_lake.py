@@ -7,6 +7,8 @@ def iniciar_sessao():
 
 #TRATAR NULOS
 
+
+
 # RESOLVER INCONSISTENCIAS
 
 # TRATAR DUPLICIDADES
