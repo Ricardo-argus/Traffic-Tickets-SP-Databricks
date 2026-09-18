@@ -2,16 +2,24 @@
 
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
+from bronze_lake.function import iniciar_sessao
 
-def iniciar_sessao():
+spark = iniciar_sessao()
+
+
+#Ler tabelas gravadas no Delta Lake
+silver_pagas = spark.table("multas_analytics.multas_pagas")
+
+silver_vencidas = spark.table("multas_analytics.multas_vencidas")
+
+# AJUSTAR COLNAMES
+silver_vencidas = silver_vencidas.withcolumnrenamed("QTDE", "QUANTIDADE")
 
 #TRATAR NULOS
+silver_pagas = silver_pagas.fillna({"QUANTIDADE": 1})
 
 
-
-# RESOLVER INCONSISTENCIAS
-
-# TRATAR DUPLICIDADES
+# VERIFICAR DUPLICIDADES
 
 # TRATAR ERROS DE FORMATO
 
