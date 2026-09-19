@@ -3,7 +3,7 @@
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from bronze_lake.function import iniciar_sessao
+from bronze_lake import iniciar_sessao
 
 spark = iniciar_sessao()
 
@@ -14,18 +14,33 @@ silver_pagas = spark.table("multas_analytics.multas_pagas")
 silver_vencidas = spark.table("multas_analytics.multas_vencidas")
 
 # AJUSTAR COLNAMES
-silver_vencidas = silver_vencidas.withcolumnrenamed("QTDE", "QUANTIDADE")
+silver_vencidas = silver_vencidas.withColumnRenamed("QTDE", "QUANTIDADE")
 
 #TRATAR NULOS
 silver_pagas = silver_pagas.fillna({"QUANTIDADE": 1})
 
-# CRIAR COLUNA DATA
-#Pagas
 #JUNTAR COLUNA MES + ANO E CONVERTER PARA DATE
 
-#Vencidas
+silver_pagas = silver_pagas.withColumn(
+    "DATA", F.to_date(F.concat_ws("-", col("ANO"), F.lpad(col("MES"), 2, "0")), "yyyy-MM")
+)
+silver_vencidas = silver_vencidas.withColumn(
+    "DATA", F.to_date(F.concat_ws("-", col("ANO"), F.lpad(col("MES"), 2, "0")), "yyyy-MM")
+)
 
+#CRIAR NOVA TABELA INTERMEDIARIA MUNICIPIOS
 
+municipios_pagas = silver_pagas.select("ID_MUNICIPIO", "MUNICIPIO")
+municipios_vencidas = silver_vencidas.select("ID_MUNICIPIO", "MUNICIPIO")
+
+#UNIR AS DUAS TABELAS
+municipios = municipios_pagas.union(municipios_vencidas).distinct()
+
+# Criar Tabela no Delta Lake
+if spark.catalog.tableExists("multas_analytics.municipios"):
+    municipios.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("multas_analytics.municipios")
+else:
+    municipios.write.format("delta").mode("overwrite").saveAsTable("multas_analytics.municipios")
 
 #REORGANIZAR ORDEM DAS COLUNAS
 
@@ -43,7 +58,31 @@ new_order_vencidas = ["ID_MULTA"] + [c for c in cols_vencidas if c != "ID_MULTA"
 
 silver_vencidas = silver_vencidas.select(*new_order_vencidas)
 
+#Adicionar Coluna Status
+silver_pagas = silver_pagas.withColumn("STATUS", F.lit("PAGA"))
+silver_vencidas = silver_vencidas.withColumn("STATUS", F.lit("VENCIDA"))
 
-# CRIAR TABELAS PAGAS / VENCIDAS (GOLD)
+# Criar duas tabelas Silver no Delta Lake
+if spark.catalog.tableExists("multas_analytics.silver_pagas"):
+    silver_pagas.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("multas_analytics.silver_pagas")
+else:
+    silver_pagas.write.format("delta").mode("overwrite").saveAsTable("multas_analytics.silver_pagas")
+    
+if spark.catalog.tableExists("multas_analytics.silver_vencidas"):
+    silver_vencidas.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("multas_analytics.silver_vencidas")
+else:
+    silver_vencidas.write.format("delta").mode("overwrite").saveAsTable("multas_analytics.silver_vencidas")
 
-
+# CRIAR TABELA GOLD JUNTANDO AS DUAS MULTAS
+gold_multas = silver_pagas.select(
+    "ID_MULTA", "ID_MUNICIPIO", "CODIGO_INFRACAO",
+    "TIPO_VEICULO", "UF_PLACA_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS"
+).union(
+    silver_vencidas.select(
+        "ID_MULTA", "ID_MUNICIPIO", "CODIGO_INFRACAO",
+        "TIPO_VEICULO", "UF_PLACA_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS"
+    )
+)
+           
+# Criar Tabela no Delta Lake
+gold_multas.write.format("delta").mode("overwrite").saveAsTable("multas_analytics.gold_multas")
