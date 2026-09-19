@@ -1,12 +1,13 @@
 ## Refino dos dados
 
+import sys
+sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/src")
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
-from bronze_lake import iniciar_sessao
+from bronze_pipeline.bronze_lake import iniciar_sessao
 
 spark = iniciar_sessao()
-
 
 #Ler tabelas gravadas no Delta Lake
 silver_pagas = spark.table("multas_analytics.multas_pagas")
@@ -15,6 +16,7 @@ silver_vencidas = spark.table("multas_analytics.multas_vencidas")
 
 # AJUSTAR COLNAMES
 silver_vencidas = silver_vencidas.withColumnRenamed("QTDE", "QUANTIDADE")
+silver_vencidas = silver_vencidas.withColumnRenamed("NOME_MUNICIPIO", "MUNICIPIO")
 
 #TRATAR NULOS
 silver_pagas = silver_pagas.fillna({"QUANTIDADE": 1})
@@ -76,13 +78,18 @@ else:
 # CRIAR TABELA GOLD JUNTANDO AS DUAS MULTAS
 gold_multas = silver_pagas.select(
     "ID_MULTA", "ID_MUNICIPIO", "CODIGO_INFRACAO",
-    "TIPO_VEICULO", "UF_PLACA_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS"
+    "TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS"
 ).union(
     silver_vencidas.select(
         "ID_MULTA", "ID_MUNICIPIO", "CODIGO_INFRACAO",
-        "TIPO_VEICULO", "UF_PLACA_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS"
+        "TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS"
     )
 )
+
+#Identify Non Identified Vehicles 
+gold_multas = gold_multas.Fillna({"CATEGORIA_VEICULO", "Nao Identificado"})
+
+gold_multas = gold_multas.Fillna({"TIPO_VEICULO", "Nao Identificado"})
            
 # Criar Tabela GOLD no Delta Lake
 if spark.catalog.tableExists("multas_analytics.gold_multas"):
