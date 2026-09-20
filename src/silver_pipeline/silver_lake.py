@@ -22,7 +22,6 @@ silver_vencidas = silver_vencidas.withColumnRenamed("NOME_MUNICIPIO", "MUNICIPIO
 silver_pagas = silver_pagas.fillna({"QUANTIDADE": 1})
 
 #JUNTAR COLUNA MES + ANO E CONVERTER PARA DATE
-
 silver_pagas = silver_pagas.withColumn(
     "DATA", F.to_date(F.concat_ws("-", col("ANO"), F.lpad(col("MES"), 2, "0")), "yyyy-MM")
 )
@@ -31,7 +30,6 @@ silver_vencidas = silver_vencidas.withColumn(
 )
 
 #CRIAR NOVA TABELA INTERMEDIARIA MUNICIPIOS
-
 municipios_pagas = silver_pagas.select("ID_MUNICIPIO", "MUNICIPIO")
 municipios_vencidas = silver_vencidas.select("ID_MUNICIPIO", "MUNICIPIO")
 
@@ -75,13 +73,18 @@ if spark.catalog.tableExists("multas_analytics.silver_vencidas"):
 else:
     silver_vencidas.write.format("delta").mode("overwrite").saveAsTable("multas_analytics.silver_vencidas")
 
+# CRIAR TABELA AUXILIAR QUE AVALIA POPULACAO ESTIMADA DE CADA UM DOS MUNICIPIOS PRESENTES NA TABELA MUNICIPIOS (SEADE/DADOS ABERTOS)
+
+# VERIFICAR QUANTIDADE MUNICIPIOS QUE ESTAO NA BASE DE DADOS EM COMPARACAO COM OS MUNICIPIOS EXISTENTES NO ESTADO
+# BAIXAR LISTA DE MUNICIPIOS NA SEADE E COMPARAR COM OS DA  BASE DE DADOS MULTAS ANALYTICS
+
 # CRIAR TABELA GOLD JUNTANDO AS DUAS MULTAS
 gold_multas = silver_pagas.select(
-    "ID_MULTA", "ID_MUNICIPIO", "CODIGO_INFRACAO",
+    "ID_MULTA", "ID_MUNICIPIO", "CODIGO_INFRACAO", "UF_PLACA_VEICULO",
     "TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS"
 ).union(
     silver_vencidas.select(
-        "ID_MULTA", "ID_MUNICIPIO", "CODIGO_INFRACAO",
+        "ID_MULTA", "ID_MUNICIPIO", "CODIGO_INFRACAO", "UF_PLACA_VEICULO",
         "TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS"
     )
 )
