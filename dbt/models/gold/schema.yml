@@ -1,0 +1,5 @@
+version: 2
+
+models: 
+    - name: fct_all_tickets_per_vehicle_type
+    description: "Total number of tickets issued per vehicle type"

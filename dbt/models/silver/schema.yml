@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+    - name: bronze
+    database: workspace
+    schema: multas_analytics
+    tables: 
+        - name: multas_pagas
+        - name: multas_vencidas
+
+models:
+    - name: "inserir nome do arquivo de modelo silver"
+    description: "Limpeza e padronização dos dados"
+    columns:
+        - name: "nome da coluna"
+        description: "descrição da coluna"
+        tests:
+            - unique
+            - not_null

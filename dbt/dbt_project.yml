@@ -1,0 +1,16 @@
+name: 'dbt_multas'
+version: '1.0.0'
+config-version: 2
+
+profile: 'databricks_profile'
+model-paths: ["models"]
+macro-paths: ["macros"]
+
+models:
+    Traffic-Tickets-SP:
+        silver:
+            +materialized: table
+            +schema: silver
+        gold:
+            +materialized: table
+            +schema: gold
