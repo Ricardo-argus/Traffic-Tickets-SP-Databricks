@@ -9,11 +9,11 @@ sources:
         - name: multas_vencidas
 
 models:
-    - name: "inserir nome do arquivo de modelo silver"
-    description: "Limpeza e padronização dos dados"
+    - name: "null_municipios"
+    description: "verificar municipios nulos"
     columns:
-        - name: "nome da coluna"
-        description: "descrição da coluna"
+        - name: "id_municipio"
+        description: "n identificacao municipio"
         tests:
             - unique
             - not_null

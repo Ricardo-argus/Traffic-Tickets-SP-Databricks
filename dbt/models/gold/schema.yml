@@ -1,5 +1,15 @@
 version: 2
 
-models: 
-    - name: fct_all_tickets_per_vehicle_type
-    description: "Total number of tickets issued per vehicle type"
+models:
+  - name: vehicle_type
+    description: "Resumo de multas por tipo de veículo"
+    columns:
+      - name: TIPO_VEICULO
+        description: "Categoria do veículo"
+        tests:
+          - not_null
+          - unique
+      - name: QUANTIDADE_TOTAL
+        description: "Total de multas por tipo de veículo"
+        tests:
+          - not_null

@@ -30,9 +30,7 @@ LEFT JOIN multas_analytics.municipios m ON m.ID_MUNICIPIO = g.ID_MUNICIPIO
 WHERE g.Status = 'VENCIDA'
 GROUP BY m.MUNICIPIO
 ORDER BY total_multas DESC
-""").cache().write.mode("overwrite").saveAsTable("multas_metricas")
-
-# CRIAR GRAFICOS QUE SERAO SALVOS EM CHARTS , AVALIANDO SEGUINTES INFORMACOES
+""").cache().write.mode("overwrite").saveAsTable("multas_metricas_municipios")
 
 # QUANTIDADE DE MULTAS VENCIDAS POR TIPO DE VEICULO 
 gold.createOrReplaceTempView("gold_multas")

@@ -47,7 +47,6 @@ for col_name in Infra_Codes.columns:
     if new_name != col_name:
         Infra_Codes = Infra_Codes.withColumnRenamed(col_name, new_name)
             
-
 # Convert Data to Delta Tables in DB
 
 if spark.catalog.tableExists("multas_analytics.multas_pagas"):
