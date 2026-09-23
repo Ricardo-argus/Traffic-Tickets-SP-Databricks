@@ -30,14 +30,6 @@ multas_pagas = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic
 
 multas_vencidas = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/data/multas_vencidas_*.csv", header=True, inferSchema=True)
 
-# Create IDS for Multas Pagas And Multas Vencidas
-
-# starting with ID
-windowSpec = Window.orderBy(monotonically_increasing_id())
-
-multas_pagas = multas_pagas.withColumn("ID_MULTA", row_number(). over(windowSpec))
-multas_vencidas = multas_vencidas.withColumn("ID_MULTA", row_number(). over(windowSpec))
-
 # Infracoes CSV ingestion
 Infra_Codes = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/data/tabela-codigo-infracoes-renainf.csv", header=True, inferSchema=True)
 

@@ -1,62 +1,58 @@
-## Refino dos dados
-
+import sys
+sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/src")
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
-from bronze_lake import iniciar_sessao
+from bronze_pipeline.bronze_lake import iniciar_sessao
 
 spark = iniciar_sessao()
 
 # FAZER LEITURA DAS TABELAS DE MULTAS
-gold = spark.read.table("gold_multas")
+gold = spark.read.table("multas_analytics.gold_multas")
+gold.createOrReplaceTempView("gold")
 
-# INSERIR SPARK.SQL PARA ARMAZENAR METRICAS
-gold.createOrReplaceTempView("gold_multas")
-
+# MÉTRICAS POR MUNICÍPIO
 spark.sql("""
 SELECT
-    DISTINCT(m.MUNICIPIO),
-    SUM(g.quantidade) as total_multas,
-    CASE
-    WHEN m.MUNICIPIO IS NULL THEN 'OUTROS'
-    ELSE m.MUNICIPIO
-    END as municipio,
+    SUM(g.quantidade) AS total_multas,
     CASE 
-    WHEN total_multas > 250 THEN 'ALTO'
-    WHEN total_multas > 100 THEN 'MEDIO'
-    ELSE 'BAIXA'
-    END as IMPACTO_Regional
-FROM gold_multas g
-LEFT JOIN multas_analytics.municipios m ON m.ID_MUNICIPIO = g.ID_MUNICIPIO
-WHERE g.Status = 'VENCIDA'
+        WHEN m.MUNICIPIO IS NULL THEN 'OUTROS'
+        ELSE m.MUNICIPIO
+    END AS municipio,
+    CASE 
+        WHEN SUM(g.quantidade) > 250 THEN 'ALTO'
+        WHEN SUM(g.quantidade) > 100 THEN 'MEDIO'
+        ELSE 'BAIXA'
+    END AS impacto_regional
+FROM gold g
+LEFT JOIN multas_analytics.municipios m 
+    ON m.ID_MUNICIPIO = g.ID_MUNICIPIO
+WHERE g.STATUS = 'VENCIDA'
 GROUP BY m.MUNICIPIO
 ORDER BY total_multas DESC
-""").cache().write.mode("overwrite").saveAsTable("multas_metricas_municipios")
+""").write.mode("overwrite").saveAsTable("multas_metricas_municipios")
 
-# QUANTIDADE DE MULTAS VENCIDAS POR TIPO DE VEICULO 
-gold.createOrReplaceTempView("gold_multas")
-
+# MÉTRICAS POR TIPO DE VEÍCULO
 spark.sql("""
 SELECT 
-    DISTINCT(tipo_veiculo),
-    SUM(g.quantidade) as total_multas
-FROM gold_multas g
-WHERE g.Status = 'VENCIDA'
-GROUP BY tipo_veiculo
+    g.tipo_veiculo,
+    SUM(g.quantidade) AS total_multas
+FROM gold g
+WHERE g.STATUS = 'VENCIDA'
+GROUP BY g.tipo_veiculo
 ORDER BY total_multas DESC
-""").cache().write.mode("overwrite").saveAsTable("multas_metricas_veiculo")
+""").write.mode("overwrite").saveAsTable("multas_metricas_veiculo")
 
-# QUANTIDADE DE MULTAS VENCIDAS POR GRAVIDADE (MES/ANO)
-gold.createOrReplaceTempView("gold_multas")
-
+# MÉTRICAS POR GRAVIDADE (MES/ANO)
 spark.sql("""
 SELECT 
-    DISTINCT(ic.gravidade),
-    SUM(g.quantidade) as total_multas,
-    EXTRACT(MONTH FROM g.DATA) AS MÊS,
-    EXTRACT(YEAR FROM g.DATA) AS ANO
-FROM gold_multas g
-LEFT JOIN multas_analytics.infracoes_codes ic ON ic.Código_da_infração = g.codigo_infracao
-WHERE g.Status = 'VENCIDA'
-GROUP BY gravidade, MÊS, ANO
+    ic.gravidade,
+    SUM(g.quantidade) AS total_multas,
+    EXTRACT(MONTH FROM g.DATA) AS mes,
+    EXTRACT(YEAR FROM g.DATA) AS ano
+FROM gold g
+LEFT JOIN multas_analytics.infracoes_codes ic 
+    ON CAST(ic.`Código_da_infração` AS STRING) = g.codigo_infracao
+WHERE g.STATUS = 'VENCIDA'
+GROUP BY ic.gravidade, mes, ano
 ORDER BY total_multas DESC
-""").cache().write.mode("overwrite").saveAsTable("multas_metricas_gravidade")
+""").write.mode("overwrite").saveAsTable("multas_metricas_gravidade")
