@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: vehicle_type
+  - name: quantity_per_vehicle_type
     description: "Resumo de multas por tipo de veículo"
     columns:
       - name: TIPO_VEICULO

@@ -9,10 +9,10 @@ sources:
         - name: multas_vencidas
 
 models:
-    - name: "null_municipios"
+    - name: "quantity_municipios.sql"
     description: "verificar municipios nulos"
     columns:
-        - name: "id_municipio"
+        - name: "qtd_municipios"
         description: "n identificacao municipio"
         tests:
             - unique
