@@ -20,3 +20,17 @@ models:
         description: "Total de multas por tipo de veículo"
         tests:
           - not_null
+  - name: percentage_per_vehicle
+    description: "Porcentagem de multas vencidas por município em relação ao total de multas aplicadas no Estado"
+    columns:
+      - name: porcentagem
+        description: "Porcentagem em relação ao total"
+        tests:
+          - not_null
+          - unique
+      - name: MUNICIPIO
+        description: "Município avaliado"
+        tests:
+          - not_null
+          - unique
+      
