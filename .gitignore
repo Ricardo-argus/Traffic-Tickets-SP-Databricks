@@ -1,0 +1,20 @@
+# Ignorar arquivos sensíveis
+dbt/profiles.yml
+*.env
+.env*
+
+# Ignorar diretórios de saída do dbt
+target/
+dbt_packages/
+
+# Ignorar arquivos temporários e de log
+logs/
+*.log
+notebooks_QA/logs/
+
+# Ignorar notebooks exportados
+*.ipynb
+
+# Ignorar arquivos do sistema
+.DS_Store
+Thumbs.db
