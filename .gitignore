@@ -1,7 +1,9 @@
-# Ignorar arquivos sensíveis
-dbt/profiles.yml
-*.env
-.env*
+# Ignorar arquivo de configuração sensível do dbt
+Traffic-Tickets-SP-Databricks/dbt/profiles.yml
+
+# Ignorar variáveis de ambiente
+.env
+*.env*
 
 # Ignorar diretórios de saída do dbt
 target/

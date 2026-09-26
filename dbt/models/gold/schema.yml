@@ -1,5 +1,12 @@
 version: 2
 
+sources:
+  - name: gold
+    database: workspace
+    schema: multas_analytics
+    tables:
+      - name: gold_multas
+
 models:
   - name: quantity_per_vehicle_type
     description: "Resumo de multas por tipo de veículo"

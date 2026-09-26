@@ -1,6 +1,6 @@
 WITH vehicle_type AS (
     SELECT *
-    FROM {{ ref('gold_multas') }}
+    FROM {{ source('gold', 'gold_multas') }}
     WHERE TIPO_VEICULO != 'Nao Identificado'
 )
 SELECT 

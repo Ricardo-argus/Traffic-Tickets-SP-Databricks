@@ -1,19 +1,19 @@
 version: 2
 
 sources:
-    - name: bronze
+  - name: bronze
     database: workspace
     schema: multas_analytics
-    tables: 
-        - name: multas_pagas
-        - name: multas_vencidas
+    tables:
+      - name: multas_pagas
+      - name: multas_vencidas
 
 models:
-    - name: "quantity_municipios.sql"
+  - name: quantity_municipios
     description: "verificar municipios nulos"
     columns:
-        - name: "qtd_municipios"
+      - name: qtd_municipios
         description: "n identificacao municipio"
         tests:
-            - unique
-            - not_null
+          - unique
+          - not_null
