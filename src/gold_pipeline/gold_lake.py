@@ -56,3 +56,5 @@ WHERE g.STATUS = 'VENCIDA'
 GROUP BY ic.gravidade, mes, ano
 ORDER BY total_multas DESC
 """).write.mode("overwrite").saveAsTable("multas_metricas_gravidade")
+
+#CRIAR ARQUIVO PARQUET COM METRICAS SOBRE GOLD_MULTAS & INFRACOES
