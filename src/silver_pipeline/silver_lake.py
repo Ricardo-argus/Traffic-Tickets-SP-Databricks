@@ -1,7 +1,7 @@
 ## Refino dos dados
 
 import sys
-sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/src")
+sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
@@ -66,6 +66,9 @@ municipios_vencidas = silver_vencidas.select("ID_MUNICIPIO", "MUNICIPIO")
 
 #UNIR AS DUAS TABELAS
 municipios = municipios_pagas.union(municipios_vencidas).distinct()
+
+#Tratar nulos (Municipios registrados pelo SEFAZ/DETRAN)
+municipios = municipios.dropna(subset=['MUNICIPIO'])
 
 # Criar Tabela no Delta Lake
 if spark.catalog.tableExists("multas_analytics.municipios"):

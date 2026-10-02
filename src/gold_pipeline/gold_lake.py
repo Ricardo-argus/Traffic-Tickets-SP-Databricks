@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/src")
+sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
 from bronze_pipeline.bronze_lake import iniciar_sessao

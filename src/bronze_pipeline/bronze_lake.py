@@ -26,12 +26,12 @@ schema_pagas = StructType([
 ])
 
 #Collect Multas CSVs Data
-multas_pagas = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/data/multas_pagas_*.csv", header=True, schema=schema_pagas)
+multas_pagas = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/multas_pagas_*.csv", header=True, schema=schema_pagas)
 
-multas_vencidas = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/data/multas_vencidas_*.csv", header=True, inferSchema=True)
+multas_vencidas = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/multas_vencidas_*.csv", header=True, inferSchema=True)
 
 # Infracoes CSV ingestion
-Infra_Codes = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/data/tabela-codigo-infracoes-renainf.csv", header=True, inferSchema=True)
+Infra_Codes = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/tabela-codigo-infracoes-renainf.csv", header=True, inferSchema=True)
 
 # Sanitize column names for Delta compatibility
 for col_name in Infra_Codes.columns:
