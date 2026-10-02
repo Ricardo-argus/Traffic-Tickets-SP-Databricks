@@ -1,0 +1,10 @@
+prod:
+  outputs:
+    prod:
+      type: databricks
+      host: dbc-cb784452-41af.cloud.databricks.com
+      http_path: /sql/1.0/warehouses/1e68f97829e80ece
+      catalog: workspace
+      schema: multas_analytics
+      token: "{{ env_var('DATABRICKS_TOKEN_PROD') }}"
+  target: prod

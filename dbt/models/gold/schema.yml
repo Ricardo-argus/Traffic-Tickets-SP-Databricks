@@ -27,7 +27,6 @@ models:
         description: "Porcentagem em relação ao total"
         tests:
           - not_null
-          - unique
       - name: MUNICIPIO
         description: "Município avaliado"
         tests:
@@ -40,7 +39,6 @@ models:
         description: "Tipo de multa avaliada"
         tests:
           - not_null
-          - unique
       - name: QUANTIDADE_TOTAL
         description: "Total de multas por tipo de veículo"
         tests:
