@@ -3,7 +3,7 @@ Traffic-Tickets-SP-Databricks/dbt/profiles.yml
 Traffic-Tickets-SP-Databricks/notebook_qa/access_dbt_notes.py
 
 # Ignorar variáveis de ambiente
-.env
+Traffic-Tickets-SP-Databricks/.env
 *.env*
 
 # Ignorar diretórios de saída do dbt

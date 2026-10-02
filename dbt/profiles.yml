@@ -1,0 +1,11 @@
+# profiles.yaml - configuração padrão para Databricks com Unity Catalog
+
+default: prod
+
+profiles:
+  prod:
+    host: https://<sua-instancia-databricks>.cloud.databricks.com
+    http_path: /sql/1.0/warehouses/<ID_DO_WAREHOUSE_DEV>
+    catalog: workspace
+    schema: multas_analytics
+    token: "{{ env_var('DATABRICKS_TOKEN_PROD') }}"
