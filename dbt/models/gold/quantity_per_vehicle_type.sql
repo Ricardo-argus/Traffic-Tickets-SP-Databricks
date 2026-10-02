@@ -2,6 +2,7 @@ WITH vehicle_type AS (
     SELECT *
     FROM {{ source('gold', 'gold_multas') }}
     WHERE TIPO_VEICULO != 'Nao Identificado'
+    AND STATUS = 'PAGA'
 )
 SELECT 
     TIPO_VEICULO, 

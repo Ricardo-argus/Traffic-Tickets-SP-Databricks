@@ -1,5 +1,6 @@
 # Ignorar arquivo de configuração sensível do dbt
 Traffic-Tickets-SP-Databricks/dbt/profiles.yml
+Traffic-Tickets-SP-Databricks/notebook_qa/access_dbt_notes.py
 
 # Ignorar variáveis de ambiente
 .env

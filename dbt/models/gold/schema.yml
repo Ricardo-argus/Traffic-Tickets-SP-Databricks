@@ -33,4 +33,15 @@ models:
         tests:
           - not_null
           - unique
-      
+  - name: quantity_per_month_paid
+    description: "Quantidade total de multas pagas por mês"
+    columns:
+      - name: Status_multa
+        description: "Tipo de multa avaliada"
+        tests:
+          - not_null
+          - unique
+      - name: QUANTIDADE_TOTAL
+        description: "Total de multas por tipo de veículo"
+        tests:
+          - not_null
