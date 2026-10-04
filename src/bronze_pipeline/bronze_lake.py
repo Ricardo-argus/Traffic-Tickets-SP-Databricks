@@ -10,8 +10,7 @@ def iniciar_sessao():
 
 spark = iniciar_sessao()
 
-# Name columns for Multas_pagas
-
+# Name columns for Multas_pagasy 
 schema_pagas = StructType([
     StructField("ID_MUNICIPIO", IntegerType(), True),
     StructField("MUNICIPIO", StringType(), True),
