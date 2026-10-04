@@ -39,7 +39,6 @@ for col_name in Infra_Codes.columns:
         Infra_Codes = Infra_Codes.withColumnRenamed(col_name, new_name)
             
 # Convert Data to Delta Tables in DB
-
 if spark.catalog.tableExists("multas_analytics.multas_pagas"):
     multas_pagas.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("multas_analytics.multas_pagas")
 else:

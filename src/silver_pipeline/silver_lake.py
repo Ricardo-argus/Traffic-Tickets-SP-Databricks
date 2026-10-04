@@ -21,6 +21,10 @@ silver_vencidas = spark.table("multas_analytics.multas_vencidas")
 silver_vencidas = silver_vencidas.withColumnRenamed("QTDE", "QUANTIDADE")
 silver_vencidas = silver_vencidas.withColumnRenamed("NOME_MUNICIPIO", "MUNICIPIO")
 
+# Remover municipios nulos não informados
+silver_pagas = silver_pagas.filter(F.col("MUNICIPIO").isNotNull())
+silver_vencidas = silver_vencidas.filter(F.col("MUNICIPIO").isNotNull())
+
 #TRATAR NULOS
 silver_pagas = silver_pagas.fillna({"QUANTIDADE": 1})
 
@@ -84,9 +88,6 @@ municipios_vencidas = silver_vencidas.select("ID_MUNICIPIO", "MUNICIPIO")
 
 #UNIR AS DUAS TABELAS
 municipios = municipios_pagas.union(municipios_vencidas).distinct()
-
-#Tratar nulos (Municipios registrados pelo SEFAZ/DETRAN)
-municipios = municipios.dropna(subset=['MUNICIPIO'])
 
 # Criar Tabela no Delta Lake
 if spark.catalog.tableExists("multas_analytics.municipios"):
