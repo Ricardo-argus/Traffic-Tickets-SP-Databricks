@@ -11,9 +11,7 @@ A solução foi desenvolvida seguindo boas práticas de **Data Engineering**, or
 ## Stack Tecnológica
 
 - Databricks
-- Delta Lake
-- PySpark DataFrames
-- PySpark SQL
+- PySpark
 - SQL
 - dbt (Data Build Tool)
 - Git
