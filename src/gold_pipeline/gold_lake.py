@@ -1,4 +1,5 @@
 import sys
+import pandas as pd
 sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
@@ -45,18 +46,38 @@ ORDER BY total_multas DESC
 # MÉTRICAS POR GRAVIDADE (MES/ANO)
 spark.sql("""
 SELECT 
-    ic.gravidade,
+    CASE WHEN ic.gravidade IS NULL THEN 'DESCONHECIDA' ELSE ic.gravidade END AS gravidade,
     SUM(g.quantidade) AS total_multas,
     EXTRACT(MONTH FROM g.DATA) AS mes,
     EXTRACT(YEAR FROM g.DATA) AS ano
 FROM gold g
 LEFT JOIN multas_analytics.infracoes_codes ic 
-    ON CAST(ic.`Código_da_infração` AS STRING) = g.codigo_infracao
+    ON CONCAT(CAST(ic.`Código_da_infração` AS STRING), '-', CAST(ic.`Desdob.` AS STRING)) = g.codigo_infracao
 WHERE g.STATUS = 'VENCIDA'
 GROUP BY ic.gravidade, mes, ano
 ORDER BY total_multas DESC
 """).write.mode("overwrite").saveAsTable("multas_metricas_gravidade")
 
-#CRIAR ARQUIVO PARQUET COM METRICAS SOBRE GOLD_MULTAS & INFRACOES
+#CRIAR ARQUIVO PARQUET COM METRICAS SOBRE GOLD_MULTAS & INFRACOES GRAVES POR MUNICIPIO
+resultados = spark.sql("""
+SELECT 
+    g.ID_MUNICIPIO,
+    m.MUNICIPIO,
+    SUM(g.quantidade) AS total_multas
+FROM multas_analytics.gold_multas g 
+LEFT JOIN multas_analytics.infracoes_codes ic 
+    ON CONCAT(CAST(ic.`Código_da_infração` AS STRING), '-', CAST(ic.`Desdob.` AS STRING)) = g.codigo_infracao
+LEFT JOIN multas_analytics.municipios m 
+    ON m.ID_MUNICIPIO = g.ID_MUNICIPIO
+WHERE g.STATUS = 'VENCIDA'
+AND (
+    try_cast(regexp_extract(ic.gravidade, '^ *([0-9]+)', 1) AS INT) > 5
+    OR ic.gravidade LIKE '%Gravíss%'
+)
+GROUP BY g.ID_MUNICIPIO, m.MUNICIPIO
+ORDER BY total_multas DESC""").collect()
 
-#PARQUET FILE OBSERVANDO AS MULTAS COM GRAVIDADE > 5 ATRASADAS, DE ACORDO COM MUNICIPIOS, QUANTIDADE E INDICANDO A PORCENTAGEM TOTAL RELATIVO AO TOTAL DE MULTAS
+pd.DataFrame([r.asDict() for r in resultados]).to_parquet(
+    "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/multas_gravidade_per_municipality.parquet",
+    index=False
+)
