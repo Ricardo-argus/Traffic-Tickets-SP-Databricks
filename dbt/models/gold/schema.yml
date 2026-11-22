@@ -1,7 +1,14 @@
 version: 2
 
+sources:
+  - name: gold
+    database: workspace
+    schema: multas_analytics
+    tables:
+      - name: gold_multas
+
 models:
-  - name: vehicle_type
+  - name: quantity_per_vehicle_type
     description: "Resumo de multas por tipo de veículo"
     columns:
       - name: TIPO_VEICULO
@@ -9,6 +16,29 @@ models:
         tests:
           - not_null
           - unique
+      - name: QUANTIDADE_TOTAL
+        description: "Total de multas por tipo de veículo"
+        tests:
+          - not_null
+  - name: percentage_per_vehicle
+    description: "Porcentagem de multas vencidas por município em relação ao total de multas aplicadas no Estado"
+    columns:
+      - name: porcentagem
+        description: "Porcentagem em relação ao total"
+        tests:
+          - not_null
+      - name: MUNICIPIO
+        description: "Município avaliado"
+        tests:
+          - not_null
+          - unique
+  - name: quantity_per_month_paid
+    description: "Quantidade total de multas pagas por mês"
+    columns:
+      - name: Status_multa
+        description: "Tipo de multa avaliada"
+        tests:
+          - not_null
       - name: QUANTIDADE_TOTAL
         description: "Total de multas por tipo de veículo"
         tests:

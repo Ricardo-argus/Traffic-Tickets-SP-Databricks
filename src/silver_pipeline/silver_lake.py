@@ -1,7 +1,7 @@
 ## Refino dos dados
 
 import sys
-sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP/src")
+sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
@@ -21,11 +21,34 @@ silver_vencidas = spark.table("multas_analytics.multas_vencidas")
 silver_vencidas = silver_vencidas.withColumnRenamed("QTDE", "QUANTIDADE")
 silver_vencidas = silver_vencidas.withColumnRenamed("NOME_MUNICIPIO", "MUNICIPIO")
 
+# Remover municipios nulos não informados
+silver_pagas = silver_pagas.filter(F.col("MUNICIPIO").isNotNull())
+silver_vencidas = silver_vencidas.filter(F.col("MUNICIPIO").isNotNull())
+
 #TRATAR NULOS
 silver_pagas = silver_pagas.fillna({"QUANTIDADE": 1})
-silver_vencidas = silver_vencidas.fillna({"QUANTIDADE": 1})
 
-# agrupar e somar quantidades de duplicados
+# Vencidas: em vez de fillna(1), criamos uma coluna ajustada
+silver_vencidas = silver_vencidas.withColumn(
+    "QUANTIDADE_AJUSTADA",
+    F.when(F.col("QUANTIDADE").isNotNull(), F.col("QUANTIDADE"))
+     .otherwise(F.lit(1))
+)
+
+# Remove duplicatas de multas vencidas em snapshots mensais, mantendo apenas o primeiro registro por multa.
+dedup_window = Window.partitionBy(
+    "ID_MUNICIPIO", "MUNICIPIO", "CODIGO_INFRACAO",
+    "UF_PLACA_VEICULO", "TIPO_VEICULO", "CATEGORIA_VEICULO"
+).orderBy("ANO", "MES")
+
+silver_vencidas = (
+    silver_vencidas
+    .withColumn("_snapshot_rank", F.row_number().over(dedup_window))
+    .filter(F.col("_snapshot_rank") == 1)
+    .drop("_snapshot_rank")
+)
+
+# agrupar e somar quantidades totais
 silver_pagas = (
     silver_pagas.groupBy(
         "ID_MUNICIPIO", "MUNICIPIO", "CODIGO_INFRACAO",
@@ -35,16 +58,15 @@ silver_pagas = (
     .agg(F.sum(F.coalesce(col("QUANTIDADE"), F.lit(1))).alias("QUANTIDADE"))
 )
 
+# Vencidas: groupBy apos deduplicacao — cada multa aparece apenas uma vez
 silver_vencidas = (
     silver_vencidas.groupBy(
         "ID_MUNICIPIO", "MUNICIPIO", "CODIGO_INFRACAO",
         "UF_PLACA_VEICULO", "TIPO_VEICULO", "CATEGORIA_VEICULO",
         "MES", "ANO"
     )
-    .agg(F.sum(F.coalesce(col("QUANTIDADE"), F.lit(1))).alias("QUANTIDADE"))
+    .agg(F.sum("QUANTIDADE_AJUSTADA").alias("QUANTIDADE"))
 )
-
-# Create IDS for Multas Pagas And Multas Vencidas
 
 # starting with ID
 windowSpec = Window.orderBy(monotonically_increasing_id())
