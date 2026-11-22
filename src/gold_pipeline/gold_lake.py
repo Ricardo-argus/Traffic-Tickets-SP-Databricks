@@ -4,14 +4,25 @@ sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP
 from pyspark.sql.functions import col
 from pyspark.sql import SparkSession
 from bronze_pipeline.bronze_lake import iniciar_sessao
+import logging
+import traceback
+
+# rastreia cada métrica gravada; em caso de erro, loga o traceback completo 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+)
+log = logging.getLogger("gold_lake")
 
 spark = iniciar_sessao()
 
 # FAZER LEITURA DAS TABELAS DE MULTAS
 gold = spark.read.table("multas_analytics.gold_multas")
+log.info("[gold] leitura gold_multas: %d linhas", gold.count())
 gold.createOrReplaceTempView("gold")
 
 # MÉTRICAS POR MUNICÍPIO
+log.info("[gold] ETAPA 1: gravando multas_metricas_municipios...")
 spark.sql("""
 SELECT
     SUM(g.quantidade) AS total_multas,
@@ -33,6 +44,7 @@ ORDER BY total_multas DESC
 """).write.mode("overwrite").saveAsTable("multas_metricas_municipios")
 
 # MÉTRICAS POR TIPO DE VEÍCULO
+log.info("[gold] ETAPA 2: gravando multas_metricas_veiculo...")
 spark.sql("""
 SELECT 
     g.tipo_veiculo,
@@ -44,6 +56,7 @@ ORDER BY total_multas DESC
 """).write.mode("overwrite").saveAsTable("multas_metricas_veiculo")
 
 # MÉTRICAS POR GRAVIDADE (MES/ANO)
+log.info("[gold] ETAPA 3: gravando multas_metricas_gravidade...")
 spark.sql("""
 SELECT 
     CASE WHEN ic.gravidade IS NULL THEN 'DESCONHECIDA' ELSE ic.gravidade END AS gravidade,
@@ -59,6 +72,7 @@ ORDER BY total_multas DESC
 """).write.mode("overwrite").saveAsTable("multas_metricas_gravidade")
 
 # Criar Métrica para quantidade de multas por data e tipo de veiculo desde 2025
+log.info("[gold] ETAPA 4: gravando quantidade_multas_pagas_por_veiculo...")
 spark.sql("""
 WITH paid_per_vehicle AS (
     SELECT
@@ -103,7 +117,9 @@ AND (
 GROUP BY g.ID_MUNICIPIO, m.MUNICIPIO
 ORDER BY total_multas DESC""").collect()
 
+log.info("[gold] ETAPA 5: exportando parquet com %d municípios...", len(resultados))
 pd.DataFrame([r.asDict() for r in resultados]).to_parquet(
     "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/multas_gravidade_per_municipality.parquet",
     index=False
 )
+log.info("[gold] PIPELINE GOLD CONCLUIDO")
