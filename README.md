@@ -1,13 +1,13 @@
 #  Multas de Trânsito do Estado de São Paulo — Pipeline Delta Lake Medallion
 
-Pipeline de dados **ponta a ponta** que processa dados públicos de multas de trânsito **pagas** e **vencidas** de todos os municípios do Estado de São Paulo, seguindo a **arquitetura Medallion (Bronze → Silver → Gold)** sobre **Databricks + Delta Lake**, com transformações em **PySpark**, métricas analíticas em **SQL**, camada analítica complementar em **dbt** e qualidade de código garantida por uma suíte de **24 testes pytest**.
+Pipeline de dados **ponta a ponta** que processa dados públicos de multas de trânsito **pagas** e **vencidas** de todos os municípios do Estado de São Paulo, seguindo a **arquitetura Medallion (Bronze → Silver → Gold)** sobre **Databricks + Delta Lake**, com transformações em **PySpark**, métricas analíticas em **SQL**, camada analítica complementar em **dbt** e qualidade de código garantida por uma suíte de **27 testes pytest**.
 
 | | |
 | --- | --- |
 | **Volume processado** | ~2,1 milhões de registros brutos (1.350.117 multas pagas + 749.059 vencidas) |
 | **Período dos dados** | Novembro/2025 a Agosto/2026 (snapshots mensais) |
 | **Tabelas geradas** | 3 Bronze · 4 Silver · 1 Gold + 4 tabelas de métricas + 1 export parquet |
-| **Testes** | 24 testes pytest (camadas bronze, silver e gold) + testes dbt |
+| **Testes** | 27 testes pytest (camadas bronze, silver e gold) + testes dbt |
 
 ---
 
@@ -118,7 +118,8 @@ Traffic-Tickets-SP-Databricks/
 │   ├── bronze_pipeline/        # bronze_lake.py — CSV → Delta
 │   ├── silver_pipeline/        # silver_lake.py — regras de negócio e grain
 │   └── gold_pipeline/          # gold_lake.py — métricas SQL + parquet
-├── tests/                      # suíte pytest (24 testes) — ver tests/README.md
+├── tests/                      # suíte pytest (27 testes) — ver tests/README.md
+├── .env.example                # template de configuração — copie para .env
 ├── .gitignore
 └── README.md
 ```
@@ -147,23 +148,25 @@ Os pipelines devem ser executados **na ordem** (cada camada consome a anterior):
 3. src/gold_pipeline/gold_lake.py
 ```
 
-Cada script pode ser executado como arquivo no Databricks (o `sys.path` já aponta para `src/`). As tabelas são gravadas no schema **`multas_analytics`** (catálogo `workspace`) — tudo centralizado em `src/common/config.py`.
+Cada script pode ser executado como arquivo no Databricks (o `sys.path` é resolvido a partir da localização do próprio arquivo — portável entre usuários e pastas). As tabelas são gravadas no schema **`multas_analytics`** (catálogo `workspace`) — tudo centralizado em `src/common/config.py`.
+
+>  Configuração centralizada no arquivo **`.env`** na raiz do projeto (copie de **`.env.example`**; o `.env` é ignorado pelo Git): defina `MULTAS_SRC`, `MULTAS_CATALOG` e `MULTAS_DATA_DIR` ali — ou como variáveis de ambiente — sem editar código.
 
 ---
 
 ##  Testes
 
-A suíte pytest em `tests/` cobre as três camadas — **24 testes, todos passando**:
+A suíte pytest em `tests/` cobre as três camadas — **27 testes, todos passando**:
 
-- **Bronze**: sanitização de colunas (incluindo cabeçalhos reais da RENAINF), schema estrito e leitura de CSV;
-- **Silver**: todas as funções puras — renomeação, filtro de nulos, `QUANTIDADE_AJUSTADA`, dedup de snapshots (mantém o mais antigo), agregação por grain, `ID_MULTA`, datas, dimensão de municípios e construção da gold;
-- **Gold**: as regras de negócio do SQL **executadas de verdade** contra DataFrames toy (thresholds 50.000/20.000, janela de datas, filtro `VENCIDA`/`PAGA`) + o export parquet.
+- **Bronze**: sanitização de colunas (incluindo cabeçalhos reais da RENAINF), schema estrito, leitura de CSV e registro de fontes (`SOURCES`);
+- **Silver**: todas as funções puras — renomeação, filtro de nulos, `QUANTIDADE_AJUSTADA`, dedup de snapshots (mantém o mais antigo), agregação por grain, `ID_MULTA`, datas, dimensão de municípios, construção da gold e o mapeamento de colunas (`RENAME_MAP`);
+- **Gold**: as regras de negócio do SQL **executadas de verdade** contra DataFrames toy (thresholds 50.000/20.000, janela de datas, filtro `VENCIDA`/`PAGA`), o registro de métricas (`METRICS`) e o export parquet.
 
 Os testes **nunca escrevem** nas tabelas reais: usam temp views descartáveis e o `tmp_path` do pytest. Instruções de execução (local e Databricks) em [`tests/README.md`](tests/README.md).
 
 ---
 
-##  dbt — Camada Analítica
+##  dbt 
 
 O projeto inclui o projeto dbt **`dbt_multas`** como camada analítica complementar, consumindo as tabelas do pipeline:
 

@@ -1,15 +1,32 @@
 """Pytest configuration for the Traffic-Tickets-SP pipeline tests.
 
-Adds ``src/`` to ``sys.path`` so the lake packages import cleanly and provides
-a shared SparkSession fixture for the transformation tests.
+Locates the pipeline ``src/`` directory — via the ``MULTAS_SRC`` environment
+variable, the folder next to ``tests/``, or the workspace default — and adds it
+to ``sys.path`` so the lake packages import cleanly. Also provides a shared
+SparkSession fixture for the transformation tests.
 """
 
+import os
 import sys
+from pathlib import Path
 
 import pytest
 from pyspark.sql import SparkSession
 
-SRC = "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src"
+# Locate src/: MULTAS_SRC env var > folder next to tests/ > any ancestor of cwd
+# (or the user home) that contains the Traffic-Tickets-SP-Databricks repo.
+def _src_candidates():
+    yield os.getenv("MULTAS_SRC")
+    yield str(Path(__file__).resolve().parent.parent / "src")
+    for base in (Path.cwd(), *Path.cwd().parents, Path.home()):
+        yield str(base / "Traffic-Tickets-SP-Databricks" / "src")
+
+SRC = next((p for p in _src_candidates() if p and Path(p).is_dir()), None)
+if SRC is None:
+    raise RuntimeError(
+        "Could not locate the pipeline 'src/' directory; "
+        "set the MULTAS_SRC environment variable to its absolute path"
+    )
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 

@@ -11,12 +11,19 @@ from types import SimpleNamespace
 import pandas as pd
 
 from gold_pipeline.gold_lake import (
+    METRICS,
     SQL_METRICS_MUNICIPALITIES,
     SQL_METRICS_PAID_BY_VEHICLE,
     SQL_METRICS_SEVERITY,
     SQL_SEVERITY_BY_MUNICIPALITY,
     SQL_METRICS_VEHICLE,
     export_severity_by_municipality,
+)
+from common.config import (
+    TBL_METRICS_MUNICIPALITIES,
+    TBL_METRICS_PAID_BY_VEHICLE,
+    TBL_METRICS_SEVERITY,
+    TBL_METRICS_VEHICLE,
 )
 
 GOLD_COLUMNS = (
@@ -28,6 +35,18 @@ GOLD_COLUMNS = (
 
 def _gold_view(spark, rows):
     spark.createDataFrame(rows, GOLD_COLUMNS).createOrReplaceTempView("gold")
+
+
+def test_metrics_registry_covers_all_metric_tables():
+    assert set(METRICS) == {
+        TBL_METRICS_MUNICIPALITIES,
+        TBL_METRICS_VEHICLE,
+        TBL_METRICS_SEVERITY,
+        TBL_METRICS_PAID_BY_VEHICLE,
+    }
+    assert METRICS[TBL_METRICS_VEHICLE]["sql"] is SQL_METRICS_VEHICLE
+    assert METRICS[TBL_METRICS_MUNICIPALITIES]["sql"] is SQL_METRICS_MUNICIPALITIES
+    assert all(metric["description"] for metric in METRICS.values())
 
 
 def test_metrics_vehicle_sql_counts_only_overdue(spark):

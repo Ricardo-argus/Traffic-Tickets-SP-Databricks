@@ -1,6 +1,19 @@
+import os
 import re
 import sys
-sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
+from pathlib import Path
+try:
+    SRC = str(Path(__file__).resolve().parent.parent)
+except NameError:
+    _repo = Path.cwd().parents[1]
+    _env = _repo / ".env"
+    if _env.is_file():
+        for _line in _env.read_text().splitlines():
+            _k, _, _v = _line.partition("=")
+            if _k.strip().startswith("MULTAS_"):
+                os.environ.setdefault(_k.strip(), _v.strip())
+    SRC = os.getenv("MULTAS_SRC", str(_repo / "src"))
+sys.path.insert(0, SRC)
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
@@ -47,24 +60,38 @@ def read_csv_source(spark: SparkSession, path: str, schema: StructType = None) -
     return spark.read.csv(path, header=True, inferSchema=True)
 
 
+# Source registry: logical name -> {path, schema, table, sanitize}
+SOURCES = {
+    "paid": {"path": CSV_PAID, "schema": SCHEMA_PAID, "table": TBL_BRONZE_PAID},
+    "overdue": {"path": CSV_OVERDUE, "schema": None, "table": TBL_BRONZE_OVERDUE},
+    "infraction_codes": {
+        "path": CSV_INFRACTIONS,
+        "schema": None,
+        "table": TBL_BRONZE_INFRACTIONS,
+        "sanitize": True,
+    },
+}
+
+# Reads one registered source; sanitizes column names when the source requires it.
+def read_source(spark: SparkSession, source: dict) -> DataFrame:
+    df = read_csv_source(spark, source["path"], schema=source["schema"])
+    if source.get("sanitize"):
+        df = sanitize_column_names(df)
+    return df
+
+
 def main(spark: SparkSession = None) -> None:
     spark = spark or get_spark_session()
 
     # Collect fines CSV data
-    fines_paid = read_csv_source(spark, CSV_PAID, schema=SCHEMA_PAID)
-    fines_overdue = read_csv_source(spark, CSV_OVERDUE)
-
-    # Infraction codes CSV ingestion
-    infraction_codes = sanitize_column_names(read_csv_source(spark, CSV_INFRACTIONS))
-
-    log.info("[bronze] STEP 1: CSV reads — paid=%d rows, overdue=%d rows, infraction_codes=%d rows",
-             fines_paid.count(), fines_overdue.count(), infraction_codes.count())
+    frames = {name: read_source(spark, source) for name, source in SOURCES.items()}
+    log.info("[bronze] STEP 1: CSV reads — %s",
+             ", ".join(f"{name}={df.count()} rows" for name, df in frames.items()))
 
     # Convert data to Delta tables
     log.info("[bronze] STEP 2: writing Delta tables...")
-    write_delta_table(spark, fines_paid, TBL_BRONZE_PAID)
-    write_delta_table(spark, fines_overdue, TBL_BRONZE_OVERDUE)
-    write_delta_table(spark, infraction_codes, TBL_BRONZE_INFRACTIONS)
+    for name, source in SOURCES.items():
+        write_delta_table(spark, frames[name], source["table"])
     log.info("[bronze] BRONZE PIPELINE FINISHED")
 
 

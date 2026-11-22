@@ -6,6 +6,9 @@ Traffic-Tickets-SP-Databricks/notebook_qa/access_dbt_notes.py
 Traffic-Tickets-SP-Databricks/.env
 *.env*
 
+# ... mas manter o template versionado
+!.env.example
+
 # Ignorar diretórios de saída do dbt
 target/
 dbt_packages/

@@ -1,14 +1,19 @@
 """Shared constants for the pipeline: catalog, paths and table names.
 
 Single place to change when the catalog or the data directory moves.
+Every value below can be overridden by a MULTAS_* environment variable
+(or by the repo's .env file) without editing code.
 """
 
-CATALOG = "multas_analytics"
+import os
+from pathlib import Path
+
+CATALOG = os.getenv("MULTAS_CATALOG", "multas_analytics")
 
 # -----------------------------------------------------------------------------
-# File paths (source CSVs and exported parquet)
+# File paths (source CSVs and exported parquet) — the repo's data/ by default
 # -----------------------------------------------------------------------------
-DATA_DIR = "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data"
+DATA_DIR = os.getenv("MULTAS_DATA_DIR", str(Path(__file__).resolve().parents[2] / "data"))
 CSV_PAID = f"{DATA_DIR}/multas_pagas_*.csv"
 CSV_OVERDUE = f"{DATA_DIR}/multas_vencidas_*.csv"
 CSV_INFRACTIONS = f"{DATA_DIR}/tabela-codigo-infracoes-renainf.csv"

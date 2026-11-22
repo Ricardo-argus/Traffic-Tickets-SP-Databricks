@@ -28,6 +28,10 @@ import sys, os, shutil
 sys.dont_write_bytecode = True
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 
+# conftest locates src/ via MULTAS_SRC (env var or repo .env), the folder next to
+# tests/, or the repo under your home dir — set this only for non-standard layouts
+os.environ.setdefault("MULTAS_SRC", "/Workspace/Users/<you>/Traffic-Tickets-SP-Databricks/src")
+
 src_tests = "/Workspace/Users/<you>/Traffic-Tickets-SP-Databricks/tests"
 tmp_tests = "/tmp/tt_tests"
 shutil.rmtree(tmp_tests, ignore_errors=True)

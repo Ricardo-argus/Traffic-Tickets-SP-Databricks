@@ -3,7 +3,9 @@
 from conftest import FINE_COLUMNS
 from silver_pipeline.silver_lake import (
     FINE_KEY_COLUMNS,
+    RENAME_MAP,
     SILVER_GRAIN,
+    UNIDENTIFIED_VEHICLE,
     add_fine_date,
     add_fine_id,
     add_overdue_adjusted_quantity,
@@ -29,6 +31,11 @@ def test_grain_definition():
         "UF_PLACA_VEICULO", "TIPO_VEICULO", "CATEGORIA_VEICULO",
     ]
     assert SILVER_GRAIN == FINE_KEY_COLUMNS + ["MES", "ANO"]
+
+
+def test_rename_map_and_unidentified_value_constants():
+    assert RENAME_MAP == {"QTDE": "QUANTIDADE", "NOME_MUNICIPIO": "MUNICIPIO"}
+    assert UNIDENTIFIED_VEHICLE == "Nao Identificado"
 
 
 def test_rename_overdue_columns(spark):

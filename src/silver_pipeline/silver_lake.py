@@ -1,6 +1,19 @@
 # Data refinement (silver layer)
+import os
 import sys
-sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
+from pathlib import Path
+try:
+    SRC = str(Path(__file__).resolve().parent.parent)
+except NameError:
+    _repo = Path.cwd().parents[1]
+    _env = _repo / ".env"
+    if _env.is_file():
+        for _line in _env.read_text().splitlines():
+            _k, _, _v = _line.partition("=")
+            if _k.strip().startswith("MULTAS_"):
+                os.environ.setdefault(_k.strip(), _v.strip())
+    SRC = os.getenv("MULTAS_SRC", str(_repo / "src"))
+sys.path.insert(0, SRC)
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.functions import col, monotonically_increasing_id, row_number
@@ -27,11 +40,19 @@ FINE_KEY_COLUMNS = [
 ]
 SILVER_GRAIN = FINE_KEY_COLUMNS + ["MES", "ANO"]
 
+# Column mapping that standardizes the overdue source to the paid layout
+RENAME_MAP = {
+    "QTDE": "QUANTIDADE",
+    "NOME_MUNICIPIO": "MUNICIPIO",
+}
+
+# Value used to fill vehicle columns that were not reported
+UNIDENTIFIED_VEHICLE = "Nao Identificado"
+
 def rename_overdue_columns(df: DataFrame) -> DataFrame:
-    return (
-        df.withColumnRenamed("QTDE", "QUANTIDADE")
-          .withColumnRenamed("NOME_MUNICIPIO", "MUNICIPIO")
-    )
+    for old_name, new_name in RENAME_MAP.items():
+        df = df.withColumnRenamed(old_name, new_name)
+    return df
 
 
 def filter_null_municipalities(df: DataFrame) -> DataFrame:
@@ -97,9 +118,14 @@ def build_gold_fines(paid: DataFrame, overdue: DataFrame) -> DataFrame:
         "ID_MUNICIPIO", "CODIGO_INFRACAO", "UF_PLACA_VEICULO",
         "TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS",
     ]
-    gold = paid.select(*gold_columns).union(overdue.select(*gold_columns))
-    gold = gold.fillna({"CATEGORIA_VEICULO": "Nao Identificado"})
-    return gold.fillna({"TIPO_VEICULO": "Nao Identificado"})
+    return (
+        paid.select(*gold_columns)
+            .union(overdue.select(*gold_columns))
+            .fillna({
+                "TIPO_VEICULO": UNIDENTIFIED_VEHICLE,
+                "CATEGORIA_VEICULO": UNIDENTIFIED_VEHICLE,
+            })
+    )
 
 
 def main(spark: SparkSession = None) -> None:

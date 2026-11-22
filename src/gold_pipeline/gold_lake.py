@@ -1,8 +1,21 @@
 # Gold layer: metrics over gold_multas and parquet export.
 
 import io
+import os
 import sys
-sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
+from pathlib import Path
+try:
+    SRC = str(Path(__file__).resolve().parent.parent)
+except NameError:
+    _repo = Path.cwd().parents[1]
+    _env = _repo / ".env"
+    if _env.is_file():
+        for _line in _env.read_text().splitlines():
+            _k, _, _v = _line.partition("=")
+            if _k.strip().startswith("MULTAS_"):
+                os.environ.setdefault(_k.strip(), _v.strip())
+    SRC = os.getenv("MULTAS_SRC", str(_repo / "src"))
+sys.path.insert(0, SRC)
 import pandas as pd
 from pyspark.sql import SparkSession
 
@@ -112,6 +125,14 @@ AND (
 GROUP BY g.ID_MUNICIPIO, m.MUNICIPIO
 ORDER BY total_multas DESC"""
 
+# Gold metrics registry: target table -> {sql, description}.
+METRICS = {
+    TBL_METRICS_MUNICIPALITIES: {"sql": SQL_METRICS_MUNICIPALITIES, "description": "overdue fines by municipality"},
+    TBL_METRICS_VEHICLE: {"sql": SQL_METRICS_VEHICLE, "description": "overdue fines by vehicle type"},
+    TBL_METRICS_SEVERITY: {"sql": SQL_METRICS_SEVERITY, "description": "overdue fines by severity, month and year"},
+    TBL_METRICS_PAID_BY_VEHICLE: {"sql": SQL_METRICS_PAID_BY_VEHICLE, "description": "paid fines by date and vehicle type"},
+}
+
 # Exports one of the metrics to parquet
 def export_severity_by_municipality(results) -> None:
     df = pd.DataFrame([r.asDict() for r in results])
@@ -132,17 +153,9 @@ def main(spark: SparkSession = None) -> None:
     log.info("[gold] gold_multas read: %d rows", gold.count())
     gold.createOrReplaceTempView("gold")
 
-    log.info("[gold] STEP 1: writing multas_metricas_municipios...")
-    write_metric_from_sql(spark, SQL_METRICS_MUNICIPALITIES, TBL_METRICS_MUNICIPALITIES)
-
-    log.info("[gold] STEP 2: writing multas_metricas_veiculo...")
-    write_metric_from_sql(spark, SQL_METRICS_VEHICLE, TBL_METRICS_VEHICLE)
-
-    log.info("[gold] STEP 3: writing multas_metricas_gravidade...")
-    write_metric_from_sql(spark, SQL_METRICS_SEVERITY, TBL_METRICS_SEVERITY)
-
-    log.info("[gold] STEP 4: writing quantidade_multas_pagas_por_veiculo...")
-    write_metric_from_sql(spark, SQL_METRICS_PAID_BY_VEHICLE, TBL_METRICS_PAID_BY_VEHICLE)
+    for step, (table, metric) in enumerate(METRICS.items(), start=1):
+        log.info("[gold] STEP %d: writing %s (%s)...", step, table, metric["description"])
+        write_metric_from_sql(spark, metric["sql"], table)
 
     results = spark.sql(SQL_SEVERITY_BY_MUNICIPALITY).collect()
     log.info("[gold] STEP 5: exporting parquet with %d municipalities...", len(results))
