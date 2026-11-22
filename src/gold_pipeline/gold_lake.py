@@ -1,29 +1,27 @@
+#Camada gold: métricas sobre gold_multas e exportação parquet.
+
+import io
 import sys
-import pandas as pd
 sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
-from pyspark.sql.functions import col
+import pandas as pd
 from pyspark.sql import SparkSession
-from bronze_pipeline.bronze_lake import iniciar_sessao
-import logging
-import traceback
 
-# rastreia cada métrica gravada; em caso de erro, loga o traceback completo 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+from common.config import (
+    PARQUET_GRAVIDADE_MUNICIPIOS,
+    TBL_GOLD_MULTAS,
+    TBL_METRICAS_GRAVIDADE,
+    TBL_METRICAS_MUNICIPIOS,
+    TBL_METRICAS_QTDE_PAGAS_VEICULO,
+    TBL_METRICAS_VEICULO,
 )
-log = logging.getLogger("gold_lake")
+from common.io_delta import gravar_metrica_sql
+from common.logging_utils import setup_logging
+from common.spark_utils import iniciar_sessao
 
-spark = iniciar_sessao()
-
-# FAZER LEITURA DAS TABELAS DE MULTAS
-gold = spark.read.table("multas_analytics.gold_multas")
-log.info("[gold] leitura gold_multas: %d linhas", gold.count())
-gold.createOrReplaceTempView("gold")
+log = setup_logging("gold_lake")
 
 # MÉTRICAS POR MUNICÍPIO
-log.info("[gold] ETAPA 1: gravando multas_metricas_municipios...")
-spark.sql("""
+SQL_METRICAS_MUNICIPIOS = """
 SELECT
     SUM(g.quantidade) AS total_multas,
     CASE 
@@ -41,11 +39,10 @@ LEFT JOIN multas_analytics.municipios m
 WHERE g.STATUS = 'VENCIDA'
 GROUP BY m.MUNICIPIO
 ORDER BY total_multas DESC
-""").write.mode("overwrite").saveAsTable("multas_metricas_municipios")
+"""
 
 # MÉTRICAS POR TIPO DE VEÍCULO
-log.info("[gold] ETAPA 2: gravando multas_metricas_veiculo...")
-spark.sql("""
+SQL_METRICAS_VEICULO = """
 SELECT 
     g.tipo_veiculo,
     SUM(g.quantidade) AS total_multas
@@ -53,11 +50,10 @@ FROM gold g
 WHERE g.STATUS = 'VENCIDA'
 GROUP BY g.tipo_veiculo
 ORDER BY total_multas DESC
-""").write.mode("overwrite").saveAsTable("multas_metricas_veiculo")
+"""
 
 # MÉTRICAS POR GRAVIDADE (MES/ANO)
-log.info("[gold] ETAPA 3: gravando multas_metricas_gravidade...")
-spark.sql("""
+SQL_METRICAS_GRAVIDADE = """
 SELECT 
     CASE WHEN ic.gravidade IS NULL THEN 'DESCONHECIDA' ELSE ic.gravidade END AS gravidade,
     SUM(g.quantidade) AS total_multas,
@@ -69,11 +65,10 @@ LEFT JOIN multas_analytics.infracoes_codes ic
 WHERE g.STATUS = 'VENCIDA'
 GROUP BY ic.gravidade, mes, ano
 ORDER BY total_multas DESC
-""").write.mode("overwrite").saveAsTable("multas_metricas_gravidade")
+"""
 
 # Criar Métrica para quantidade de multas por data e tipo de veiculo desde 2025
-log.info("[gold] ETAPA 4: gravando quantidade_multas_pagas_por_veiculo...")
-spark.sql("""
+SQL_QTDE_PAGAS_VEICULO = """
 WITH paid_per_vehicle AS (
     SELECT
         DATA,
@@ -96,10 +91,10 @@ DATA
 FROM paid_per_vehicle
 WHERE to_date(DATA) >= '2025-10-30'
 AND DATA <= '2026-09-01'
-ORDER BY quantidade_multas_pagas DESC;""").write.mode("overwrite").saveAsTable("quantidade_multas_pagas_por_veiculo") 
+ORDER BY quantidade_multas_pagas DESC;"""
 
-#CRIAR ARQUIVO PARQUET COM METRICAS SOBRE GOLD_MULTAS & INFRACOES GRAVES POR MUNICIPIO
-resultados = spark.sql("""
+# MÉTRICAS DE INFRAÇÕES GRAVES POR MUNICÍPIO (exportação parquet)
+SQL_GRAVIDADE_POR_MUNICIPIO = """
 SELECT 
     g.ID_MUNICIPIO,
     m.MUNICIPIO,
@@ -115,11 +110,45 @@ AND (
     OR ic.gravidade LIKE '%Gravíss%'
 )
 GROUP BY g.ID_MUNICIPIO, m.MUNICIPIO
-ORDER BY total_multas DESC""").collect()
+ORDER BY total_multas DESC"""
 
-log.info("[gold] ETAPA 5: exportando parquet com %d municípios...", len(resultados))
-pd.DataFrame([r.asDict() for r in resultados]).to_parquet(
-    "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/multas_gravidade_per_municipality.parquet",
-    index=False
-)
-log.info("[gold] PIPELINE GOLD CONCLUIDO")
+# Exportação de uma das métricas em parquet
+def exportar_parquet_gravidade(resultados) -> None:
+    df = pd.DataFrame([r.asDict() for r in resultados])
+    try:
+        df.to_parquet(PARQUET_GRAVIDADE_MUNICIPIOS, index=False)
+    except PermissionError:
+        buf = io.BytesIO()
+        df.to_parquet(buf, index=False)
+        with open(PARQUET_GRAVIDADE_MUNICIPIOS, "wb") as f:
+            f.write(buf.getbuffer())
+
+#Executa função para criação de métricas Delta utilizando camada_gold
+def main(spark: SparkSession = None) -> None:
+    spark = spark or iniciar_sessao()
+
+    # FAZER LEITURA DAS TABELAS DE MULTAS
+    gold = spark.table(TBL_GOLD_MULTAS)
+    log.info("[gold] leitura gold_multas: %d linhas", gold.count())
+    gold.createOrReplaceTempView("gold")
+
+    log.info("[gold] ETAPA 1: gravando multas_metricas_municipios...")
+    gravar_metrica_sql(spark, SQL_METRICAS_MUNICIPIOS, TBL_METRICAS_MUNICIPIOS)
+
+    log.info("[gold] ETAPA 2: gravando multas_metricas_veiculo...")
+    gravar_metrica_sql(spark, SQL_METRICAS_VEICULO, TBL_METRICAS_VEICULO)
+
+    log.info("[gold] ETAPA 3: gravando multas_metricas_gravidade...")
+    gravar_metrica_sql(spark, SQL_METRICAS_GRAVIDADE, TBL_METRICAS_GRAVIDADE)
+
+    log.info("[gold] ETAPA 4: gravando quantidade_multas_pagas_por_veiculo...")
+    gravar_metrica_sql(spark, SQL_QTDE_PAGAS_VEICULO, TBL_METRICAS_QTDE_PAGAS_VEICULO)
+
+    resultados = spark.sql(SQL_GRAVIDADE_POR_MUNICIPIO).collect()
+    log.info("[gold] ETAPA 5: exportando parquet com %d municípios...", len(resultados))
+    exportar_parquet_gravidade(resultados)
+    log.info("[gold] PIPELINE GOLD CONCLUIDO")
+
+
+if __name__ == "__main__":
+    main()
