@@ -1,1 +1,1 @@
-"""Módulo comum do pipeline Traffic-Tickets-SP (spark, I/O Delta, logging, config)."""
+"""Shared module for the Traffic-Tickets-SP pipeline (spark, Delta I/O, logging, config)."""

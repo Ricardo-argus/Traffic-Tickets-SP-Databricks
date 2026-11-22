@@ -1,4 +1,4 @@
-## Refino dos dados
+# Data refinement (silver layer)
 import sys
 sys.path.insert(0, "/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/src")
 from pyspark.sql import DataFrame, SparkSession
@@ -7,166 +7,163 @@ from pyspark.sql.functions import col, monotonically_increasing_id, row_number
 from pyspark.sql.window import Window
 
 from common.config import (
-    TBL_BRONZE_PAGAS,
-    TBL_BRONZE_VENCIDAS,
-    TBL_MUNICIPIOS,
-    TBL_SILVER_PAGAS,
-    TBL_SILVER_VENCIDAS,
-    TBL_GOLD_MULTAS,
+    TBL_BRONZE_PAID,
+    TBL_BRONZE_OVERDUE,
+    TBL_MUNICIPALITIES,
+    TBL_SILVER_PAID,
+    TBL_SILVER_OVERDUE,
+    TBL_GOLD_FINES,
 )
-from common.io_delta import gravar_delta
+from common.io_delta import write_delta_table
 from common.logging_utils import setup_logging
-from common.spark_utils import iniciar_sessao
+from common.spark_utils import get_spark_session
 
 log = setup_logging("silver_lake")
 
-# Colunas que identificam uma multa (sem MES/ANO) e o grain completo da silver
-COLUNAS_MULTA = [
+# Columns that identify a fine (without MES/ANO) and the full silver grain
+FINE_KEY_COLUMNS = [
     "ID_MUNICIPIO", "MUNICIPIO", "CODIGO_INFRACAO",
     "UF_PLACA_VEICULO", "TIPO_VEICULO", "CATEGORIA_VEICULO",
 ]
-GRAIN_SILVER = COLUNAS_MULTA + ["MES", "ANO"]
+SILVER_GRAIN = FINE_KEY_COLUMNS + ["MES", "ANO"]
 
-def padronizar_colunas_vencidas(df: DataFrame) -> DataFrame:
+def rename_overdue_columns(df: DataFrame) -> DataFrame:
     return (
         df.withColumnRenamed("QTDE", "QUANTIDADE")
           .withColumnRenamed("NOME_MUNICIPIO", "MUNICIPIO")
     )
 
 
-def filtrar_municipios_nulos(df: DataFrame) -> DataFrame:
+def filter_null_municipalities(df: DataFrame) -> DataFrame:
     return df.filter(F.col("MUNICIPIO").isNotNull())
 
 
-def tratar_quantidade_pagas(df: DataFrame) -> DataFrame:
+def fill_paid_quantities(df: DataFrame) -> DataFrame:
     return df.fillna({"QUANTIDADE": 1})
 
 
-def criar_quantidade_ajustada_vencidas(df: DataFrame) -> DataFrame:
+def add_overdue_adjusted_quantity(df: DataFrame) -> DataFrame:
     return df.withColumn(
         "QUANTIDADE_AJUSTADA",
         F.when(F.col("QUANTIDADE").isNotNull(), F.col("QUANTIDADE"))
          .otherwise(F.lit(1)),
     )
 
-#Remove duplicatas de multas vencidas em snapshots mensais cumulativos
-def deduplicar_snapshots(df: DataFrame) -> DataFrame:
-    dedup_window = Window.partitionBy(*COLUNAS_MULTA).orderBy("ANO", "MES")
+#Removes duplicates of overdue fines across cumulative monthly snapshots
+# (keeps only the first record — earliest ANO/MES — per fine)
+def dedupe_monthly_snapshots(df: DataFrame) -> DataFrame:
+    dedup_window = Window.partitionBy(*FINE_KEY_COLUMNS).orderBy("ANO", "MES")
     return (
         df.withColumn("_snapshot_rank", F.row_number().over(dedup_window))
           .filter(F.col("_snapshot_rank") == 1)
           .drop("_snapshot_rank")
     )
 
-# Agrupa no grain da silver e soma as quantidades.
-def agregar_por_grain(df: DataFrame, coluna_quantidade) -> DataFrame:
+# Groups by the silver grain and sums the quantities.
+# Accepts a column name (e.g. 'QUANTIDADE_AJUSTADA') or an expression (e.g. F.coalesce(...)).
+def aggregate_to_grain(df: DataFrame, quantity_column) -> DataFrame:
     return (
-        df.groupBy(*GRAIN_SILVER)
-          .agg(F.sum(coluna_quantidade).alias("QUANTIDADE"))
+        df.groupBy(*SILVER_GRAIN)
+          .agg(F.sum(quantity_column).alias("QUANTIDADE"))
     )
 
-#Adiciona ID_MULTA sequencial (row_number sobre id monotônico)
-def gerar_id_multa(df: DataFrame) -> DataFrame:
+#Adds a sequential ID_MULTA (row_number over a monotonic id)
+def add_fine_id(df: DataFrame) -> DataFrame:
     window_spec = Window.orderBy(monotonically_increasing_id())
     return df.withColumn("ID_MULTA", row_number().over(window_spec))
 
-#JUNTA COLUNA MES + ANO E CONVERTER PARA DATE (yyyy-MM)
-def gerar_coluna_data(df: DataFrame) -> DataFrame:
+#Combines the MES + ANO columns and converts to DATE (yyyy-MM)
+def add_fine_date(df: DataFrame) -> DataFrame:
     return df.withColumn(
         "DATA",
         F.to_date(F.concat_ws("-", col("ANO"), F.lpad(col("MES"), 2, "0")), "yyyy-MM"),
     )
 
-"""CRIA NOVA TABELA INTERMEDIARIA MUNICIPIOS: união distinta dos dois lakes."""
-def criar_dimensao_municipios(pagas: DataFrame, vencidas: DataFrame) -> DataFrame:
+# Builds the intermediate municipalities table: distinct union of the two lakes.
+def build_municipality_dim(paid: DataFrame, overdue: DataFrame) -> DataFrame:
     return (
-        pagas.select("ID_MUNICIPIO", "MUNICIPIO")
-             .union(vencidas.select("ID_MUNICIPIO", "MUNICIPIO"))
-             .distinct()
+        paid.select("ID_MUNICIPIO", "MUNICIPIO")
+            .union(overdue.select("ID_MUNICIPIO", "MUNICIPIO"))
+            .distinct()
     )
 
 
-def adicionar_status(df: DataFrame, status: str) -> DataFrame:
+def add_status(df: DataFrame, status: str) -> DataFrame:
     return df.withColumn("STATUS", F.lit(status))
 
-
-def construir_gold(pagas: DataFrame, vencidas: DataFrame) -> DataFrame:
-    """CRIAR TABELA GOLD JUNTANDO AS DUAS MULTAS.
-
-    Identify Non Identified Vehicles: TIPO/CATEGORIA nulos → 'Nao Identificado'.
-    """
-    colunas_gold = [
+#Build the gold table by unioning the two fine sources.
+def build_gold_fines(paid: DataFrame, overdue: DataFrame) -> DataFrame:
+    gold_columns = [
         "ID_MUNICIPIO", "CODIGO_INFRACAO", "UF_PLACA_VEICULO",
         "TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS",
     ]
-    gold = pagas.select(*colunas_gold).union(vencidas.select(*colunas_gold))
+    gold = paid.select(*gold_columns).union(overdue.select(*gold_columns))
     gold = gold.fillna({"CATEGORIA_VEICULO": "Nao Identificado"})
     return gold.fillna({"TIPO_VEICULO": "Nao Identificado"})
 
 
 def main(spark: SparkSession = None) -> None:
-    """Executa o pipeline silver: bronze → silver → gold_multas."""
-    spark = spark or iniciar_sessao()
+    spark = spark or get_spark_session()
 
-    # Ler tabelas gravadas no Delta Lake
-    silver_pagas = spark.table(TBL_BRONZE_PAGAS)
-    silver_vencidas = padronizar_colunas_vencidas(spark.table(TBL_BRONZE_VENCIDAS))
+    # Read the tables stored in Delta Lake
+    silver_paid = spark.table(TBL_BRONZE_PAID)
+    silver_overdue = rename_overdue_columns(spark.table(TBL_BRONZE_OVERDUE))
 
-    n_pagas_antes, n_vencidas_antes = silver_pagas.count(), silver_vencidas.count()
-    log.info("[silver] ETAPA 1: leitura bronze — pagas=%d linhas, vencidas=%d linhas",
-             n_pagas_antes, n_vencidas_antes)
+    paid_before, overdue_before = silver_paid.count(), silver_overdue.count()
+    log.info("[silver] STEP 1: bronze read — paid=%d rows, overdue=%d rows",
+             paid_before, overdue_before)
 
-    # Remover municipios nulos não informados
-    silver_pagas = filtrar_municipios_nulos(silver_pagas)
-    silver_vencidas = filtrar_municipios_nulos(silver_vencidas)
-    log.info("[silver] filtro MUNICIPIO nulo: pagas %d->%d (%d removidas), vencidas %d->%d (%d removidas)",
-             n_pagas_antes, silver_pagas.count(), n_pagas_antes - silver_pagas.count(),
-             n_vencidas_antes, silver_vencidas.count(), n_vencidas_antes - silver_vencidas.count())
+    # Remove unreported null municipalities
+    silver_paid = filter_null_municipalities(silver_paid)
+    silver_overdue = filter_null_municipalities(silver_overdue)
+    log.info("[silver] null MUNICIPIO filter: paid %d->%d (%d removed), overdue %d->%d (%d removed)",
+             paid_before, silver_paid.count(), paid_before - silver_paid.count(),
+             overdue_before, silver_overdue.count(), overdue_before - silver_overdue.count())
 
-    # TRATAR NULOS
-    log.info("[silver] ETAPA 2: tratamento de nulos (QUANTIDADE)")
-    silver_pagas = tratar_quantidade_pagas(silver_pagas)
-    silver_vencidas = criar_quantidade_ajustada_vencidas(silver_vencidas)
+    # Handle nulls
+    log.info("[silver] STEP 2: null handling (QUANTIDADE)")
+    silver_paid = fill_paid_quantities(silver_paid)
+    silver_overdue = add_overdue_adjusted_quantity(silver_overdue)
 
-    # Dedup de snapshots cumulativos das vencidas
-    n_antes_dedup = silver_vencidas.count()
-    silver_vencidas = deduplicar_snapshots(silver_vencidas)
-    log.info("[silver] ETAPA 3: dedup snapshots vencidas: %d -> %d linhas (%d duplicatas removidas)",
-             n_antes_dedup, silver_vencidas.count(), n_antes_dedup - silver_vencidas.count())
+    # Dedup of cumulative overdue snapshots
+    before_dedup = silver_overdue.count()
+    silver_overdue = dedupe_monthly_snapshots(silver_overdue)
+    log.info("[silver] STEP 3: overdue snapshot dedup: %d -> %d rows (%d duplicates removed)",
+             before_dedup, silver_overdue.count(), before_dedup - silver_overdue.count())
 
-    # agrupar e somar quantidades totais
-    silver_pagas = agregar_por_grain(silver_pagas, F.coalesce(col("QUANTIDADE"), F.lit(1)))
-    log.info("[silver] ETAPA 4: agregação pagas concluída: %d linhas no grain", silver_pagas.count())
+    # Group and sum total quantities
+    silver_paid = aggregate_to_grain(silver_paid, F.coalesce(col("QUANTIDADE"), F.lit(1)))
+    log.info("[silver] STEP 4: paid aggregation done: %d rows at grain", silver_paid.count())
 
-    # Vencidas: groupBy apos deduplicacao — cada multa aparece apenas uma vez
-    silver_vencidas = agregar_por_grain(silver_vencidas, "QUANTIDADE_AJUSTADA")
-    log.info("[silver] agregação vencidas concluída: %d linhas no grain", silver_vencidas.count())
+    # Overdue: groupBy after dedup — each fine appears only once
+    silver_overdue = aggregate_to_grain(silver_overdue, "QUANTIDADE_AJUSTADA")
+    log.info("[silver] overdue aggregation done: %d rows at grain", silver_overdue.count())
 
-    silver_pagas = gerar_id_multa(silver_pagas)
-    silver_vencidas = gerar_id_multa(silver_vencidas)
+    silver_paid = add_fine_id(silver_paid)
+    silver_overdue = add_fine_id(silver_overdue)
 
-    silver_pagas = gerar_coluna_data(silver_pagas)
-    silver_vencidas = gerar_coluna_data(silver_vencidas)
+    silver_paid = add_fine_date(silver_paid)
+    silver_overdue = add_fine_date(silver_overdue)
 
-    # CRIAR NOVA TABELA INTERMEDIARIA MUNICIPIOS + gravar no Delta Lake
-    municipios = criar_dimensao_municipios(silver_pagas, silver_vencidas)
-    gravar_delta(spark, municipios, TBL_MUNICIPIOS)
-    log.info("[silver] dimensão municipios gravada no Delta Lake")
+    # Build the intermediate municipalities table + write to Delta Lake
+    municipalities = build_municipality_dim(silver_paid, silver_overdue)
+    write_delta_table(spark, municipalities, TBL_MUNICIPALITIES)
+    log.info("[silver] municipalities dimension written to Delta Lake")
 
-    # Adicionar Coluna Status
-    silver_pagas = adicionar_status(silver_pagas, "PAGA")
-    silver_vencidas = adicionar_status(silver_vencidas, "VENCIDA")
+    # Add the STATUS column
+    silver_paid = add_status(silver_paid, "PAGA")
+    silver_overdue = add_status(silver_overdue, "VENCIDA")
 
-    # Criar duas tabelas Silver no Delta Lake
-    log.info("[silver] ETAPA 5: gravando tabelas silver no Delta Lake...")
-    gravar_delta(spark, silver_pagas, TBL_SILVER_PAGAS)
-    gravar_delta(spark, silver_vencidas, TBL_SILVER_VENCIDAS)
-    log.info("[silver] PIPELINE SILVER CONCLUIDO")
+    # Write the two silver tables to Delta Lake
+    log.info("[silver] STEP 5: writing silver tables to Delta Lake...")
+    write_delta_table(spark, silver_paid, TBL_SILVER_PAID)
+    write_delta_table(spark, silver_overdue, TBL_SILVER_OVERDUE)
+    log.info("[silver] SILVER PIPELINE FINISHED")
 
-    # CRIAR TABELA GOLD JUNTANDO AS DUAS MULTAS
-    gold_multas = construir_gold(silver_pagas, silver_vencidas)
-    gravar_delta(spark, gold_multas, TBL_GOLD_MULTAS)
-    log.info("[silver] PIPELINE SILVER+GOLD CONCLUIDO")
+    # Build the gold table by unioning the two fine sources
+    gold_fines = build_gold_fines(silver_paid, silver_overdue)
+    write_delta_table(spark, gold_fines, TBL_GOLD_FINES)
+    log.info("[silver] SILVER+GOLD PIPELINE FINISHED")
 
 
 if __name__ == "__main__":

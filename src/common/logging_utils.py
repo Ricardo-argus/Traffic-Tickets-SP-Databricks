@@ -1,13 +1,13 @@
-"""Configuração padrão de logging do pipeline."""
+"""Standard logging configuration for the pipeline."""
 
 import logging
 
-# Mesmo formato já usado pelos três scripts (basicConfig é idempotente:
-# a primeira chamada configura, as demais não alteram nada)
-FORMATO_LOG = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+# Same format already used by the three scripts (basicConfig is idempotent:
+# the first call configures it, later calls change nothing)
+LOG_FORMAT = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
 
 
-def setup_logging(nome: str, level: int = logging.INFO) -> logging.Logger:
-    """Garante o formato padrão de logging e devolve um logger nomeado."""
-    logging.basicConfig(level=level, format=FORMATO_LOG)
-    return logging.getLogger(nome)
+def setup_logging(name: str, level: int = logging.INFO) -> logging.Logger:
+    """Ensure the standard logging format and return a named logger."""
+    logging.basicConfig(level=level, format=LOG_FORMAT)
+    return logging.getLogger(name)
