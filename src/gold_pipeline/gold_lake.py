@@ -58,6 +58,32 @@ GROUP BY ic.gravidade, mes, ano
 ORDER BY total_multas DESC
 """).write.mode("overwrite").saveAsTable("multas_metricas_gravidade")
 
+# Criar Métrica para quantidade de multas por data e tipo de veiculo desde 2025
+spark.sql("""
+WITH paid_per_vehicle AS (
+    SELECT
+        DATA,
+        SUM(QUANTIDADE) AS quantidade_multas_pagas,
+        TIPO_VEICULO
+    FROM gold
+    WHERE STATUS = 'PAGA'
+    GROUP BY DATA, TIPO_VEICULO
+)
+
+SELECT
+quantidade_multas_pagas, 
+CASE
+    WHEN quantidade_multas_pagas > 50000 THEN 'HIGH QUANTITY'
+    WHEN quantidade_multas_pagas > 20000 THEN 'MEDIUM QUANTITY'
+ELSE 'LOW QUANTITY'
+END AS Status_quantidade, 
+TIPO_VEICULO, 
+DATA 
+FROM paid_per_vehicle
+WHERE to_date(DATA) >= '2025-10-30'
+AND DATA <= '2026-09-01'
+ORDER BY quantidade_multas_pagas DESC;""").write.mode("overwrite").saveAsTable("quantidade_multas_pagas_por_veiculo") 
+
 #CRIAR ARQUIVO PARQUET COM METRICAS SOBRE GOLD_MULTAS & INFRACOES GRAVES POR MUNICIPIO
 resultados = spark.sql("""
 SELECT 
