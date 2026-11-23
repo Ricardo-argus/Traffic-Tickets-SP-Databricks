@@ -1,17 +1,38 @@
+import os
 import re
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import monotonically_increasing_id
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, DoubleType, DateType
-from pyspark.sql.window import Window
-from pyspark.sql.functions import row_number
+import sys
+from pathlib import Path
+try:
+    SRC = str(Path(__file__).resolve().parent.parent)
+except NameError:
+    _repo = Path.cwd().parents[1]
+    _env = _repo / ".env"
+    if _env.is_file():
+        for _line in _env.read_text().splitlines():
+            _k, _, _v = _line.partition("=")
+            if _k.strip().startswith("MULTAS_"):
+                os.environ.setdefault(_k.strip(), _v.strip())
+    SRC = os.getenv("MULTAS_SRC", str(_repo / "src"))
+sys.path.insert(0, SRC)
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
-def iniciar_sessao():
-    return SparkSession.builder.appName("TrafficTicketsSP").getOrCreate()
+from common.config import (
+    CSV_INFRACTIONS,
+    CSV_PAID,
+    CSV_OVERDUE,
+    TBL_BRONZE_INFRACTIONS,
+    TBL_BRONZE_PAID,
+    TBL_BRONZE_OVERDUE,
+)
+from common.io_delta import write_delta_table
+from common.logging_utils import setup_logging
+from common.spark_utils import get_spark_session
 
-spark = iniciar_sessao()
+log = setup_logging("bronze_lake")
 
-# Name columns for Multas_pagasy 
-schema_pagas = StructType([
+# Column schema for the paid fines source (multas_pagas)
+SCHEMA_PAID = StructType([
     StructField("ID_MUNICIPIO", IntegerType(), True),
     StructField("MUNICIPIO", StringType(), True),
     StructField("CODIGO_INFRACAO", StringType(), True),
@@ -24,32 +45,55 @@ schema_pagas = StructType([
     StructField("ANO", IntegerType(), True),
 ])
 
-#Collect Multas CSVs Data
-multas_pagas = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/multas_pagas_*.csv", header=True, schema=schema_pagas)
+# Sanitize column names for Delta compatibility.
+def sanitize_column_names(df: DataFrame) -> DataFrame:
+    for col_name in df.columns:
+        new_name = re.sub(r"[ ,;{}()\n\t=]", "_", col_name)
+        if new_name != col_name:
+            df = df.withColumnRenamed(col_name, new_name)
+    return df
 
-multas_vencidas = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/multas_vencidas_*.csv", header=True, inferSchema=True)
 
-# Infracoes CSV ingestion
-Infra_Codes = spark.read.csv("/Workspace/Users/ricardo.shs615@gmail.com/Traffic-Tickets-SP-Databricks/data/tabela-codigo-infracoes-renainf.csv", header=True, inferSchema=True)
+def read_csv_source(spark: SparkSession, path: str, schema: StructType = None) -> DataFrame:
+    if schema is not None:
+        return spark.read.csv(path, header=True, schema=schema)
+    return spark.read.csv(path, header=True, inferSchema=True)
 
-# Sanitize column names for Delta compatibility
-for col_name in Infra_Codes.columns:
-    new_name = re.sub(r"[ ,;{}()\n\t=]", "_", col_name)
-    if new_name != col_name:
-        Infra_Codes = Infra_Codes.withColumnRenamed(col_name, new_name)
-            
-# Convert Data to Delta Tables in DB
-if spark.catalog.tableExists("multas_analytics.multas_pagas"):
-    multas_pagas.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("multas_analytics.multas_pagas")
-else:
-    multas_pagas.write.format("delta").mode("overwrite").saveAsTable("multas_analytics.multas_pagas")
 
-if spark.catalog.tableExists("multas_analytics.multas_vencidas"):
-    multas_vencidas.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("multas_analytics.multas_vencidas")
-else:
-    multas_vencidas.write.format("delta").mode("overwrite").saveAsTable("multas_analytics.multas_vencidas")
+# Source registry: logical name -> {path, schema, table, sanitize}
+SOURCES = {
+    "paid": {"path": CSV_PAID, "schema": SCHEMA_PAID, "table": TBL_BRONZE_PAID},
+    "overdue": {"path": CSV_OVERDUE, "schema": None, "table": TBL_BRONZE_OVERDUE},
+    "infraction_codes": {
+        "path": CSV_INFRACTIONS,
+        "schema": None,
+        "table": TBL_BRONZE_INFRACTIONS,
+        "sanitize": True,
+    },
+}
 
-if spark.catalog.tableExists("multas_analytics.infracoes_codes"):
-    Infra_Codes.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable("multas_analytics.infracoes_codes")
-else:
-    Infra_Codes.write.format("delta").mode("overwrite").saveAsTable("multas_analytics.infracoes_codes")
+# Reads one registered source; sanitizes column names when the source requires it.
+def read_source(spark: SparkSession, source: dict) -> DataFrame:
+    df = read_csv_source(spark, source["path"], schema=source["schema"])
+    if source.get("sanitize"):
+        df = sanitize_column_names(df)
+    return df
+
+
+def main(spark: SparkSession = None) -> None:
+    spark = spark or get_spark_session()
+
+    # Collect fines CSV data
+    frames = {name: read_source(spark, source) for name, source in SOURCES.items()}
+    log.info("[bronze] STEP 1: CSV reads — %s",
+             ", ".join(f"{name}={df.count()} rows" for name, df in frames.items()))
+
+    # Convert data to Delta tables
+    log.info("[bronze] STEP 2: writing Delta tables...")
+    for name, source in SOURCES.items():
+        write_delta_table(spark, frames[name], source["table"])
+    log.info("[bronze] BRONZE PIPELINE FINISHED")
+
+
+if __name__ == "__main__":
+    main()
