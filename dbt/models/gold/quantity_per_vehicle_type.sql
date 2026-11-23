@@ -1,8 +1,12 @@
 WITH vehicle_type AS (
-    SELECT *
-    FROM {{ source('gold', 'gold_multas') }}
-    WHERE TIPO_VEICULO != 'Nao Identificado'
-    AND STATUS = 'PAGA'
+    SELECT
+        g.QUANTIDADE,
+        t.TIPO_VEICULO
+    FROM {{ source('gold', 'gold_multas') }} g
+    LEFT JOIN {{ source('gold', 'tipos_veiculo') }} t
+        ON t.ID_TIPO_VEICULO = g.ID_TIPO_VEICULO
+    WHERE t.TIPO_VEICULO != 'Nao Identificado'
+    AND g.STATUS = 'PAGA'
 )
 SELECT 
     TIPO_VEICULO, 

@@ -55,13 +55,16 @@ ORDER BY total_multas DESC
 """
 
 # METRICS BY VEHICLE TYPE
+# gold_multas stores only the surrogate key; the description comes from the dim.
 SQL_METRICS_VEHICLE = """
 SELECT 
-    g.tipo_veiculo,
+    t.TIPO_VEICULO AS tipo_veiculo,
     SUM(g.quantidade) AS total_multas
 FROM gold g
+LEFT JOIN multas_analytics.tipos_veiculo t
+    ON t.ID_TIPO_VEICULO = g.ID_TIPO_VEICULO
 WHERE g.STATUS = 'VENCIDA'
-GROUP BY g.tipo_veiculo
+GROUP BY t.TIPO_VEICULO
 ORDER BY total_multas DESC
 """
 
@@ -84,12 +87,14 @@ ORDER BY total_multas DESC
 SQL_METRICS_PAID_BY_VEHICLE = """
 WITH paid_per_vehicle AS (
     SELECT
-        DATA,
-        SUM(QUANTIDADE) AS quantidade_multas_pagas,
-        TIPO_VEICULO
-    FROM gold
-    WHERE STATUS = 'PAGA'
-    GROUP BY DATA, TIPO_VEICULO
+        g.DATA,
+        SUM(g.QUANTIDADE) AS quantidade_multas_pagas,
+        t.TIPO_VEICULO
+    FROM gold g
+    LEFT JOIN multas_analytics.tipos_veiculo t
+        ON t.ID_TIPO_VEICULO = g.ID_TIPO_VEICULO
+    WHERE g.STATUS = 'PAGA'
+    GROUP BY g.DATA, t.TIPO_VEICULO
 )
 
 SELECT

@@ -23,6 +23,7 @@ from common.config import (
     TBL_BRONZE_PAID,
     TBL_BRONZE_OVERDUE,
     TBL_MUNICIPALITIES,
+    TBL_VEHICLE_TYPES,
     TBL_SILVER_PAID,
     TBL_SILVER_OVERDUE,
     TBL_GOLD_FINES,
@@ -71,7 +72,6 @@ def add_overdue_adjusted_quantity(df: DataFrame) -> DataFrame:
     )
 
 #Removes duplicates of overdue fines across cumulative monthly snapshots
-# (keeps only the first record — earliest ANO/MES — per fine)
 def dedupe_monthly_snapshots(df: DataFrame) -> DataFrame:
     dedup_window = Window.partitionBy(*FINE_KEY_COLUMNS).orderBy("ANO", "MES")
     return (
@@ -81,7 +81,6 @@ def dedupe_monthly_snapshots(df: DataFrame) -> DataFrame:
     )
 
 # Groups by the silver grain and sums the quantities.
-# Accepts a column name (e.g. 'QUANTIDADE_AJUSTADA') or an expression (e.g. F.coalesce(...)).
 def aggregate_to_grain(df: DataFrame, quantity_column) -> DataFrame:
     return (
         df.groupBy(*SILVER_GRAIN)
@@ -108,23 +107,45 @@ def build_municipality_dim(paid: DataFrame, overdue: DataFrame) -> DataFrame:
             .distinct()
     )
 
+# Builds the vehicle type dimension: every distinct TIPO_VEICULO 
+def build_vehicle_type_dim(paid: DataFrame, overdue: DataFrame) -> DataFrame:
+    types = (
+        paid.select(F.coalesce(col("TIPO_VEICULO"), F.lit(UNIDENTIFIED_VEHICLE)).alias("TIPO_VEICULO"))
+            .unionByName(
+                overdue.select(F.coalesce(col("TIPO_VEICULO"), F.lit(UNIDENTIFIED_VEHICLE)).alias("TIPO_VEICULO"))
+            )
+            .distinct()
+    )
+    id_window = Window.orderBy("TIPO_VEICULO")
+    return types.withColumn("ID_TIPO_VEICULO", row_number().over(id_window))
+
 
 def add_status(df: DataFrame, status: str) -> DataFrame:
     return df.withColumn("STATUS", F.lit(status))
 
-#Build the gold table by unioning the two fine sources.
-def build_gold_fines(paid: DataFrame, overdue: DataFrame) -> DataFrame:
+#Build the gold table by unioning the two fine sources
+def build_gold_fines(paid: DataFrame, overdue: DataFrame, vehicle_types: DataFrame) -> DataFrame:
     gold_columns = [
         "ID_MUNICIPIO", "CODIGO_INFRACAO", "UF_PLACA_VEICULO",
         "TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS",
     ]
-    return (
+    fines = (
         paid.select(*gold_columns)
             .union(overdue.select(*gold_columns))
             .fillna({
                 "TIPO_VEICULO": UNIDENTIFIED_VEHICLE,
                 "CATEGORIA_VEICULO": UNIDENTIFIED_VEHICLE,
             })
+    )
+    # Column order: the surrogate key sits right after UF_PLACA_VEICULO,
+    # exactly where the description used to be.
+    gold_order = [
+        "ID_MUNICIPIO", "CODIGO_INFRACAO", "UF_PLACA_VEICULO",
+        "ID_TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS",
+    ]
+    return (
+        fines.join(vehicle_types, on="TIPO_VEICULO", how="left")
+            .select(*gold_order)
     )
 
 
@@ -176,6 +197,11 @@ def main(spark: SparkSession = None) -> None:
     write_delta_table(spark, municipalities, TBL_MUNICIPALITIES)
     log.info("[silver] municipalities dimension written to Delta Lake")
 
+    # Build the vehicle type dimension + write to Delta Lake
+    vehicle_types = build_vehicle_type_dim(silver_paid, silver_overdue)
+    write_delta_table(spark, vehicle_types, TBL_VEHICLE_TYPES)
+    log.info("[silver] vehicle type dimension written to Delta Lake")
+
     # Add the STATUS column
     silver_paid = add_status(silver_paid, "PAGA")
     silver_overdue = add_status(silver_overdue, "VENCIDA")
@@ -187,7 +213,7 @@ def main(spark: SparkSession = None) -> None:
     log.info("[silver] SILVER PIPELINE FINISHED")
 
     # Build the gold table by unioning the two fine sources
-    gold_fines = build_gold_fines(silver_paid, silver_overdue)
+    gold_fines = build_gold_fines(silver_paid, silver_overdue, vehicle_types)
     write_delta_table(spark, gold_fines, TBL_GOLD_FINES)
     log.info("[silver] SILVER+GOLD PIPELINE FINISHED")
 

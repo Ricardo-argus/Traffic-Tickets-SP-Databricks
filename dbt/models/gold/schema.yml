@@ -6,6 +6,7 @@ sources:
     schema: multas_analytics
     tables:
       - name: gold_multas
+      - name: tipos_veiculo
 
 models:
   - name: quantity_per_vehicle_type
