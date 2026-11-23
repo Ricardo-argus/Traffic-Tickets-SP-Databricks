@@ -29,6 +29,7 @@ TBL_BRONZE_INFRACTIONS = f"{CATALOG}.infracoes_codes"
 
 TBL_MUNICIPALITIES = f"{CATALOG}.municipios"
 TBL_VEHICLE_TYPES = f"{CATALOG}.tipos_veiculo"
+TBL_VEHICLE_CATEGORIES = f"{CATALOG}.categorias_veiculo"
 TBL_SILVER_PAID = f"{CATALOG}.silver_pagas"
 TBL_SILVER_OVERDUE = f"{CATALOG}.silver_vencidas"
 TBL_GOLD_FINES = f"{CATALOG}.gold_multas"

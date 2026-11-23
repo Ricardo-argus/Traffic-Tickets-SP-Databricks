@@ -24,6 +24,7 @@ from common.config import (
     TBL_BRONZE_OVERDUE,
     TBL_MUNICIPALITIES,
     TBL_VEHICLE_TYPES,
+    TBL_VEHICLE_CATEGORIES,
     TBL_SILVER_PAID,
     TBL_SILVER_OVERDUE,
     TBL_GOLD_FINES,
@@ -119,12 +120,24 @@ def build_vehicle_type_dim(paid: DataFrame, overdue: DataFrame) -> DataFrame:
     id_window = Window.orderBy("TIPO_VEICULO")
     return types.withColumn("ID_TIPO_VEICULO", row_number().over(id_window))
 
+# Builds the vehicle category dimension:
+def build_vehicle_category_dim(paid: DataFrame, overdue: DataFrame) -> DataFrame:
+    categories = (
+        paid.select(F.coalesce(col("CATEGORIA_VEICULO"), F.lit(UNIDENTIFIED_VEHICLE)).alias("CATEGORIA_VEICULO"))
+            .unionByName(
+                overdue.select(F.coalesce(col("CATEGORIA_VEICULO"), F.lit(UNIDENTIFIED_VEHICLE)).alias("CATEGORIA_VEICULO"))
+            )
+            .distinct()
+    )
+    id_window = Window.orderBy("CATEGORIA_VEICULO")
+    return categories.withColumn("ID_CATEGORIA_VEICULO", row_number().over(id_window))
+
 
 def add_status(df: DataFrame, status: str) -> DataFrame:
     return df.withColumn("STATUS", F.lit(status))
 
-#Build the gold table by unioning the two fine sources
-def build_gold_fines(paid: DataFrame, overdue: DataFrame, vehicle_types: DataFrame) -> DataFrame:
+#Build the gold table by unioning the two fine sources, swapping the vehicle
+def build_gold_fines(paid: DataFrame, overdue: DataFrame, vehicle_types: DataFrame, vehicle_categories: DataFrame) -> DataFrame:
     gold_columns = [
         "ID_MUNICIPIO", "CODIGO_INFRACAO", "UF_PLACA_VEICULO",
         "TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS",
@@ -137,14 +150,14 @@ def build_gold_fines(paid: DataFrame, overdue: DataFrame, vehicle_types: DataFra
                 "CATEGORIA_VEICULO": UNIDENTIFIED_VEHICLE,
             })
     )
-    # Column order: the surrogate key sits right after UF_PLACA_VEICULO,
-    # exactly where the description used to be.
+    # Column order: each surrogate key sits exactly where the description used to be.
     gold_order = [
         "ID_MUNICIPIO", "CODIGO_INFRACAO", "UF_PLACA_VEICULO",
-        "ID_TIPO_VEICULO", "CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS",
+        "ID_TIPO_VEICULO", "ID_CATEGORIA_VEICULO", "QUANTIDADE", "DATA", "STATUS",
     ]
     return (
         fines.join(vehicle_types, on="TIPO_VEICULO", how="left")
+            .join(vehicle_categories, on="CATEGORIA_VEICULO", how="left")
             .select(*gold_order)
     )
 
@@ -202,6 +215,11 @@ def main(spark: SparkSession = None) -> None:
     write_delta_table(spark, vehicle_types, TBL_VEHICLE_TYPES)
     log.info("[silver] vehicle type dimension written to Delta Lake")
 
+    # Build the vehicle category dimension + write to Delta Lake
+    vehicle_categories = build_vehicle_category_dim(silver_paid, silver_overdue)
+    write_delta_table(spark, vehicle_categories, TBL_VEHICLE_CATEGORIES)
+    log.info("[silver] vehicle category dimension written to Delta Lake")
+
     # Add the STATUS column
     silver_paid = add_status(silver_paid, "PAGA")
     silver_overdue = add_status(silver_overdue, "VENCIDA")
@@ -213,7 +231,7 @@ def main(spark: SparkSession = None) -> None:
     log.info("[silver] SILVER PIPELINE FINISHED")
 
     # Build the gold table by unioning the two fine sources
-    gold_fines = build_gold_fines(silver_paid, silver_overdue, vehicle_types)
+    gold_fines = build_gold_fines(silver_paid, silver_overdue, vehicle_types, vehicle_categories)
     write_delta_table(spark, gold_fines, TBL_GOLD_FINES)
     log.info("[silver] SILVER+GOLD PIPELINE FINISHED")
 
